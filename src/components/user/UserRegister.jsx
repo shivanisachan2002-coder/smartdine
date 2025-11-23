@@ -8,10 +8,9 @@ import bgImg from '../../assets/image/user/kitchen-6878026.jpg'
 
 const UserRegister = () => {
 
-  document.title = "User Register | SmartDine";
+  document.title = "User Register | SmartDine 🍽️";
   
   const navigate = useNavigate();
-
   const icon = 'input-group-text text-muted';
 
   // Form Fields

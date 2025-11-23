@@ -19,27 +19,27 @@ const Bookings = () => {
   } = useContext(UserContext);
 
   const [days] = useState(() => {
-  const today = new Date();
-  return Array.from({ length: 7 }, (_, i) => {
-    const date = new Date(today);
-    date.setDate(today.getDate() + i);
-    
-    // Use local timezone for date formatting
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const fullDate = `${year}-${month}-${day}`; // YYYY-MM-DD in local timezone
-    
-    return {
-      id: i,
-      dayName: date.toLocaleDateString('en-US', { weekday: 'short' }),
-      dayNumber: date.getDate(),
-      month: date.toLocaleDateString('en-US', { month: 'short' }),
-      fullDate: fullDate, // Now uses local timezone
-      isToday: i === 0
-    };
+    const today = new Date();
+    return Array.from({ length: 7 }, (_, i) => {
+      const date = new Date(today);
+      date.setDate(today.getDate() + i);
+
+      // Use local timezone for date formatting
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const fullDate = `${year}-${month}-${day}`; // YYYY-MM-DD in local timezone
+
+      return {
+        id: i,
+        dayName: date.toLocaleDateString('en-US', { weekday: 'short' }),
+        dayNumber: date.getDate(),
+        month: date.toLocaleDateString('en-US', { month: 'short' }),
+        fullDate: fullDate, // Now uses local timezone
+        isToday: i === 0
+      };
+    });
   });
-});
 
   const [state, setState] = useState({
     day: days[0],
@@ -57,277 +57,277 @@ const Bookings = () => {
   // Fetch restaurant details and tables on mount
   // useEffect(() => {
   // }, [id]);
-  
- // Reset state and fetch data when restaurant changes
-useEffect(() => {
-  if (!id) return; // Don't fetch if no ID
-  
-  console.log('Restaurant ID changed to:', id);
-  
-  // Fetch restaurant details and tables
-  fetchRestaurantDetails(id);
-  fetchRestaurantTables(id);
-  
-  // Reset state
-  setState(prev => ({
-    ...prev,
-    slots: [],
-    availableTables: [],
-    selectedTable: null,
-    slot: null,
-    existingBookings: []
-  }));
-}, [id]);
 
+  // Reset state and fetch data when restaurant changes
+  useEffect(() => {
+    if (!id) return; // Don't fetch if no ID
 
+    console.log('Restaurant ID changed to:', id);
 
- // Generate time slots based on restaurant hours
-useEffect(() => {
-  if (!restaurantData.opening_time || !restaurantData.closing_time) return;
+    // Fetch restaurant details and tables
+    fetchRestaurantDetails(id);
+    fetchRestaurantTables(id);
 
-  const [openH, openM] = restaurantData.opening_time.split(':').map(Number);
-  const [closeH, closeM] = restaurantData.closing_time.split(':').map(Number);
+    // Reset state
+    setState(prev => ({
+      ...prev,
+      slots: [],
+      availableTables: [],
+      selectedTable: null,
+      slot: null,
+      existingBookings: []
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
-  // Start time: 30 minutes after opening
-  let startH = openH;
-  let startM = openM + 30;
-  if (startM >= 60) {
-    startH++;
-    startM -= 60;
-  }
+  // Generate time slots based on restaurant hours
+  useEffect(() => {
+    if (!restaurantData.opening_time || !restaurantData.closing_time) return;
 
-  // Calculate the latest slot start time
-  let lastSlotStartH = closeH - 4;
-  let lastSlotStartM = closeM;
-  
-  if (lastSlotStartH < 0) {
-    lastSlotStartH += 24;
-  }
+    const [openH, openM] = restaurantData.opening_time.split(':').map(Number);
+    const [closeH, closeM] = restaurantData.closing_time.split(':').map(Number);
 
-  const now = new Date();
-  const curH = now.getHours();
-  const curM = now.getMinutes();
-
-  const slots = [];
-
-  // Generate slots until we reach the last valid start time
-  while (startH < lastSlotStartH || (startH === lastSlotStartH && startM <= lastSlotStartM)) {
-    const start = `${startH.toString().padStart(2, '0')}:${startM.toString().padStart(2, '0')}`;
-    const slotEndH = startH + 2;
-    const slotEndM = startM;
-    const end = `${slotEndH.toString().padStart(2, '0')}:${slotEndM.toString().padStart(2, '0')}`;
-
-    // Check if slot is in the past
-    const isPast = state.day.isToday && (startH < curH || (startH === curH && startM <= curM));
-
-    // Only add future slots for today, or all slots for future days
-    if (!isPast) {
-      slots.push({
-        id: `${startH}-${startM}`,
-        start,
-        range: `${start} - ${end}`,
-        past: false
-      });
-    }
-
-    startM += 30;
+    // Start time: 30 minutes after opening
+    let startH = openH;
+    let startM = openM + 30;
     if (startM >= 60) {
       startH++;
       startM -= 60;
     }
-  }
 
-  setState(prev => ({
-    ...prev,
-    slots,
-    slot: null,
-    availableTables: [],
-    selectedTable: null,
-    existingBookings: []
-  }));
-}, [state.day, restaurantData]);
+    // Calculate the latest slot start time
+    let lastSlotStartH = closeH - 4;
+    let lastSlotStartM = closeM;
+
+    if (lastSlotStartH < 0) {
+      lastSlotStartH += 24;
+    }
+
+    const now = new Date();
+    const curH = now.getHours();
+    const curM = now.getMinutes();
+
+    const slots = [];
+
+    // Generate slots until we reach the last valid start time
+    while (startH < lastSlotStartH || (startH === lastSlotStartH && startM <= lastSlotStartM)) {
+      const start = `${startH.toString().padStart(2, '0')}:${startM.toString().padStart(2, '0')}`;
+      const slotEndH = startH + 2;
+      const slotEndM = startM;
+      const end = `${slotEndH.toString().padStart(2, '0')}:${slotEndM.toString().padStart(2, '0')}`;
+
+      // Check if slot is in the past
+      const isPast = state.day.isToday && (startH < curH || (startH === curH && startM <= curM));
+
+      // Only add future slots for today, or all slots for future days
+      if (!isPast) {
+        slots.push({
+          id: `${startH}-${startM}`,
+          start,
+          range: `${start} - ${end}`,
+          past: false
+        });
+      }
+
+      startM += 30;
+      if (startM >= 60) {
+        startH++;
+        startM -= 60;
+      }
+    }
+
+    setState(prev => ({
+      ...prev,
+      slots,
+      slot: null,
+      availableTables: [],
+      selectedTable: null,
+      existingBookings: []
+    }));
+  }, [state.day, restaurantData]);
 
 
-// Fetch existing bookings and calculate available tables when slot is selected
-useEffect(() => {
-  if (state.slot && restaurantTables.length > 0) {
-    const selectedSlot = state.slots.find(s => s.id === state.slot);
-    if (!selectedSlot) return;
+  // Fetch existing bookings and calculate available tables when slot is selected
+  useEffect(() => {
+    if (state.slot && restaurantTables.length > 0) {
+      const selectedSlot = state.slots.find(s => s.id === state.slot);
+      if (!selectedSlot) return;
 
-    // Calculate end time for selected slot (2 hours later)
-    const [startH, startM] = selectedSlot.start.split(':').map(Number);
-    const endH = startH + 2;
-    const selectedStartTime = selectedSlot.start;
-    const selectedEndTime = `${endH.toString().padStart(2, '0')}:${startM.toString().padStart(2, '0')}`;
+      // Calculate end time for selected slot (2 hours later)
+      const [startH, startM] = selectedSlot.start.split(':').map(Number);
+      const endH = startH + 2;
+      const selectedStartTime = selectedSlot.start;
+      const selectedEndTime = `${endH.toString().padStart(2, '0')}:${startM.toString().padStart(2, '0')}`;
 
-    console.log('🔍 Checking availability for slot:', selectedStartTime, '-', selectedEndTime);
+      console.log('🔍 Checking availability for slot:', selectedStartTime, '-', selectedEndTime);
 
-    // Fetch ALL bookings for this date AND restaurant
-    fetchBookingsForDateTime(id, state.day.fullDate)
-      .then(bookings => {
-        console.log('📋 All bookings for date:', bookings);
-        
-        setState(prev => ({ ...prev, existingBookings: bookings }));
+      // Fetch ALL bookings for this date AND restaurant
+      fetchBookingsForDateTime(id, state.day.fullDate)
+        .then(bookings => {
+          console.log('📋 All bookings for date:', bookings);
 
-        // Get guest count
-        const guestCount = state.guestOption === "other"
-          ? parseInt(state.customGuests) || 2
-          : parseInt(state.guestOption);
+          setState(prev => ({ ...prev, existingBookings: bookings }));
 
-        // Function to check if two time ranges overlap
-        const timesOverlap = (start1, end1, start2, end2) => {
-          const toMinutes = (time) => {
-            const [h, m] = time.split(':').map(Number);
-            return h * 60 + m;
+          // Get guest count
+          const guestCount = state.guestOption === "other"
+            ? parseInt(state.customGuests) || 2
+            : parseInt(state.guestOption);
+
+          // Function to check if two time ranges overlap
+          const timesOverlap = (start1, end1, start2, end2) => {
+            const toMinutes = (time) => {
+              const [h, m] = time.split(':').map(Number);
+              return h * 60 + m;
+            };
+
+            const s1 = toMinutes(start1);
+            const e1 = toMinutes(end1);
+            const s2 = toMinutes(start2);
+            const e2 = toMinutes(end2);
+
+            // Overlap: selected starts before existing ends AND selected ends after existing starts
+            return s1 < e2 && e1 > s2;
           };
-          
-          const s1 = toMinutes(start1);
-          const e1 = toMinutes(end1);
-          const s2 = toMinutes(start2);
-          const e2 = toMinutes(end2);
-          
-          // Overlap: selected starts before existing ends AND selected ends after existing starts
-          return s1 < e2 && e1 > s2;
-        };
 
-        // Get booked table IDs for overlapping time slots
-        const bookedTableIds = bookings
-          .filter(booking => {
-            // Skip cancelled bookings
-            if (booking.status === 'cancelled') return false;
-            
-            // Extract time portion (handle both HH:MM:SS and HH:MM formats)
-            const bookingStart = booking.booking_time.substring(0, 5); // HH:MM
-            const bookingEnd = booking.booking_end_time.substring(0, 5); // HH:MM
-            
-            // Check if booking overlaps with selected slot
-            const overlaps = timesOverlap(
-              selectedStartTime,
-              selectedEndTime,
-              bookingStart,
-              bookingEnd
-            );
-            
-            if (overlaps) {
-              console.log('⚠️ Overlap found:', {
-                table: booking.table_detail?.table_number,
-                tableId: booking.table_detail?.id,
-                bookingTime: `${bookingStart} - ${bookingEnd}`,
-                selectedTime: `${selectedStartTime} - ${selectedEndTime}`
-              });
-            }
-            
-            return overlaps;
-          })
-          .map(b => b.table_detail?.id)  // ✅ FIXED: Use table_detail.id
-          .filter(id => id !== undefined); // ✅ Remove any undefined values
+          // Get booked table IDs for overlapping time slots
+          const bookedTableIds = bookings
+            .filter(booking => {
+              // Skip cancelled bookings
+              if (booking.status === 'cancelled') return false;
 
-        console.log('🚫 Booked table IDs:', bookedTableIds);
+              // Extract time portion (handle both HH:MM:SS and HH:MM formats)
+              const bookingStart = booking.booking_time.substring(0, 5); // HH:MM
+              const bookingEnd = booking.booking_end_time.substring(0, 5); // HH:MM
 
-        // Filter available tables
-        const availableTables = restaurantTables
-          .filter(table =>
-            table.capacity >= guestCount && // Must fit guests
-            !bookedTableIds.includes(table.id) // Must not be booked in overlapping slot
-          )
-          .map(table => ({ ...table, available: true }));
+              // Check if booking overlaps with selected slot
+              const overlaps = timesOverlap(
+                selectedStartTime,
+                selectedEndTime,
+                bookingStart,
+                bookingEnd
+              );
 
-        console.log('✅ Available tables:', availableTables.map(t => `Table ${t.table_number} (ID: ${t.id})`));
+              if (overlaps) {
+                console.log('⚠️ Overlap found:', {
+                  table: booking.table_detail?.table_number,
+                  tableId: booking.table_detail?.id,
+                  bookingTime: `${bookingStart} - ${bookingEnd}`,
+                  selectedTime: `${selectedStartTime} - ${selectedEndTime}`
+                });
+              }
 
-        setState(prev => ({
-          ...prev,
-          availableTables,
-          selectedTable: null
-        }));
-      })
-      .catch(err => {
-        console.error("Error fetching bookings:", err);
-        setState(prev => ({ ...prev, availableTables: [], selectedTable: null }));
-      });
-  }
-}, [state.slot, state.guestOption, state.customGuests, restaurantTables, id, state.day.fullDate]);
+              return overlaps;
+            })
+            .map(b => b.table_detail?.id)  // ✅ FIXED: Use table_detail.id
+            .filter(id => id !== undefined); // ✅ Remove any undefined values
+
+          console.log('🚫 Booked table IDs:', bookedTableIds);
+
+          // Filter available tables
+          const availableTables = restaurantTables
+            .filter(table =>
+              table.capacity >= guestCount && // Must fit guests
+              !bookedTableIds.includes(table.id) // Must not be booked in overlapping slot
+            )
+            .map(table => ({ ...table, available: true }));
+
+          console.log('✅ Available tables:', availableTables.map(t => `Table ${t.table_number} (ID: ${t.id})`));
+
+          setState(prev => ({
+            ...prev,
+            availableTables,
+            selectedTable: null
+          }));
+        })
+        .catch(err => {
+          console.error("Error fetching bookings:", err);
+          setState(prev => ({ ...prev, availableTables: [], selectedTable: null }));
+        });
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.slot, state.guestOption, state.customGuests, restaurantTables, id, state.day.fullDate]);
 
   const updateState = (updates) => setState(prev => ({ ...prev, ...updates }));
 
   const handleBooking = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  // Validations
-  if (!state.slot) {
-    alert("Please select a time slot");
-    return;
-  }
+    // Validations
+    if (!state.slot) {
+      alert("Please select a time slot");
+      return;
+    }
 
-  if (!state.selectedTable) {
-    alert("Please select a table");
-    return;
-  }
+    if (!state.selectedTable) {
+      alert("Please select a table");
+      return;
+    }
 
-  if (state.guestOption === "other" && (!state.customGuests || parseInt(state.customGuests) < 1)) {
-    alert("Please enter valid guest number");
-    return;
-  }
+    if (state.guestOption === "other" && (!state.customGuests || parseInt(state.customGuests) < 1)) {
+      alert("Please enter valid guest number");
+      return;
+    }
 
-  // Get user ID from localStorage (or context)
-  const userId = localStorage.getItem('user_id');
-  if (!userId) {
-    alert("Please login to book a table");
-    return;
-  }
+    // Get user ID from localStorage (or context)
+    const userId = localStorage.getItem('user_id');
+    if (!userId) {
+      alert("Please login to book a table");
+      return;
+    }
 
-  const slot = state.slots.find(s => s.id === state.slot);
-  const table = state.availableTables.find(t => t.id === state.selectedTable);
-  
-  // Calculate end time (2 hours after start)
-  const [startH, startM] = slot.start.split(':').map(Number);
-  const endH = startH + 2;
-  const endTime = `${endH.toString().padStart(2, '0')}:${startM.toString().padStart(2, '0')}:00`;
+    const slot = state.slots.find(s => s.id === state.slot);
+    const table = state.availableTables.find(t => t.id === state.selectedTable);
 
-  // Prepare booking data matching your Django model
-  const bookingData = {
-    restaurant: id, // Restaurant ID from URL params
-    user: userId, // User ID from localStorage
-    table: table.id, // Table ID
-    booking_date: state.day.fullDate, // YYYY-MM-DD
-    booking_time: `${slot.start}:00`, // HH:MM:SS format
-    booking_end_time: endTime, // Auto-calculated but can be sent
-    status: 'booked',
-    number_of_guests: state.guestOption === "other" ? parseInt(state.customGuests) : parseInt(state.guestOption),
-    checked_in: false
+    // Calculate end time (2 hours after start)
+    const [startH, startM] = slot.start.split(':').map(Number);
+    const endH = startH + 2;
+    const endTime = `${endH.toString().padStart(2, '0')}:${startM.toString().padStart(2, '0')}:00`;
+
+    // Prepare booking data matching your Django model
+    const bookingData = {
+      restaurant: id, // Restaurant ID from URL params
+      user: userId, // User ID from localStorage
+      table: table.id, // Table ID
+      booking_date: state.day.fullDate, // YYYY-MM-DD
+      booking_time: `${slot.start}:00`, // HH:MM:SS format
+      booking_end_time: endTime, // Auto-calculated but can be sent
+      status: 'booked',
+      number_of_guests: state.guestOption === "other" ? parseInt(state.customGuests) : parseInt(state.guestOption),
+      checked_in: false
+    };
+
+    console.log('Creating booking:', bookingData);
+
+    // Call API to create booking
+    const result = await createTableBooking(bookingData);
+
+    if (result.success) {
+      // Show success message
+      updateState({
+        details: {
+          id: result.data.id,
+          date: state.day.fullDate,
+          time: slot.range,
+          guests: bookingData.number_of_guests,
+          table: table.table_number,
+          bookingData: result.data
+        },
+        waiting: true,
+        slot: null,
+        selectedTable: null,
+        availableTables: [],
+        guestOption: "2",
+        customGuests: "",
+        existingBookings: []
+      });
+
+      // Show success alert
+      alert('Table booked successfully! Booking ID: ' + result.data.id);
+    } else {
+      // Show error message
+      alert('Failed to book table: ' + JSON.stringify(result.error));
+    }
   };
-
-  console.log('Creating booking:', bookingData);
-
-  // Call API to create booking
-  const result = await createTableBooking(bookingData);
-
-  if (result.success) {
-    // Show success message
-    updateState({
-      details: {
-        id: result.data.id,
-        date: state.day.fullDate,
-        time: slot.range,
-        guests: bookingData.number_of_guests,
-        table: table.table_number,
-        bookingData: result.data
-      },
-      waiting: true,
-      slot: null,
-      selectedTable: null,
-      availableTables: [],
-      guestOption: "2",
-      customGuests: "",
-      existingBookings: []
-    });
-
-    // Show success alert
-    alert('Table booked successfully! Booking ID: ' + result.data.id);
-  } else {
-    // Show error message
-    alert('Failed to book table: ' + JSON.stringify(result.error));
-  }
-};
 
 
   return (

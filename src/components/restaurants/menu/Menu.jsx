@@ -41,6 +41,7 @@ const Menu = () => {
   useEffect(() => {
     fetchCategories();
     fetchItems();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Handle Image
