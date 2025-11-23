@@ -12,6 +12,7 @@ const Tables = () => {
   // Load tables from backend
   useEffect(() => {
     fetchTablesData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ADD TABLE

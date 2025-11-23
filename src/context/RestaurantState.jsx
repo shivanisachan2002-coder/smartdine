@@ -58,7 +58,22 @@ const RestaurantState = (props) => {
       });
   };
 
-  // Staff Management State and Handlers
+  // Update Restaurant Details Handler : Update Details
+  const updateRestaurantData = async (updatedData) => {
+    const restaurant_id = localStorage.getItem('restaurant_reg_id');
+    try {
+      await RestaurantApi.patch(`restaurant/details/${restaurant_id}/`, updatedData);
+      fetchRestaurantDetails();
+      return true;
+    } catch (error) {
+      console.log("Error response:", error.response?.data);
+      return false;
+    }
+  }
+
+  //========================================
+  //   //Staff Management State and Handlers
+  //=========================================
   const [staffData, setStaffData] = useState([]);
 
   const fetchStaffData = async () => {
@@ -127,38 +142,38 @@ const RestaurantState = (props) => {
   };
 
   const addTable = async (tableData) => {
-  try {
-    const restaurantId = localStorage.getItem('restaurant_reg_id');
+    try {
+      const restaurantId = localStorage.getItem('restaurant_reg_id');
 
-    const payload = {
-      ...tableData,
-      restaurant: restaurantId,
-    };
+      const payload = {
+        ...tableData,
+        restaurant: restaurantId,
+      };
 
-    await RestaurantApi.post("management/tables/", payload);
-    await fetchTablesData();
-  } catch (error) {
-    console.error("Error adding table:", error);
-  }
-};
+      await RestaurantApi.post("management/tables/", payload);
+      await fetchTablesData();
+    } catch (error) {
+      console.error("Error adding table:", error);
+    }
+  };
 
-const updateTable = async (id, updatedData) => {
-  try {
-    await RestaurantApi.patch(`management/tables/${id}/`, updatedData);
-    await fetchTablesData();
-  } catch (error) {
-    console.error("Error updating table:", error);
-  }
-};
+  const updateTable = async (id, updatedData) => {
+    try {
+      await RestaurantApi.patch(`management/tables/${id}/`, updatedData);
+      await fetchTablesData();
+    } catch (error) {
+      console.error("Error updating table:", error);
+    }
+  };
 
-const deleteTable = async (id) => {
-  try {
-    await RestaurantApi.delete(`management/tables/${id}/`);
-    await fetchTablesData();
-  } catch (error) {
-    console.error("Error deleting table:", error);
-  }
-};
+  const deleteTable = async (id) => {
+    try {
+      await RestaurantApi.delete(`management/tables/${id}/`);
+      await fetchTablesData();
+    } catch (error) {
+      console.error("Error deleting table:", error);
+    }
+  };
 
 
 
@@ -192,17 +207,17 @@ const deleteTable = async (id) => {
     }
   };
 
-  const updateCategory = async (id, categoryData) => {
-    try {
-      await RestaurantApi.patch(
-        `management/menu-categories/${id}/`,
-        categoryData
-      );
-      await fetchCategories();
-    } catch (err) {
-      console.error("Error updating category:", err);
-    }
-  };
+  // const updateCategory = async (id, categoryData) => {
+  //   try {
+  //     await RestaurantApi.patch(
+  //       `management/menu-categories/${id}/`,
+  //       categoryData
+  //     );
+  //     await fetchCategories();
+  //   } catch (err) {
+  //     console.error("Error updating category:", err);
+  //   }
+  // };
 
   const deleteCategory = async (id) => {
     try {
@@ -281,7 +296,7 @@ const deleteTable = async (id) => {
     // const today = new Date().toISOString().split('T')[0];
     const today = new Date().toLocaleDateString('en-CA');
     console.log(today);
-    
+
     try {
       const res = await RestaurantApi.get(`management/orders/?restaurant=${restaurant_id}&tables__booking_date=${today}&tables__checked_in=true&status_not=completed`);
       setActiveOrders(res.data);
@@ -307,6 +322,47 @@ const deleteTable = async (id) => {
       console.error("Error updating order status:", err);
     }
   };
+
+
+  //--------------------------------------------------
+  // Customer Check In and Check Out Fucnction for API
+  //==================================================
+
+  const [checkedInUser, setcheckedInUser] = useState([]);
+
+  const fetchCheckedInBookings = async () => {
+    const restaurant_id = localStorage.getItem('restaurant_reg_id');
+    const today = new Date().toLocaleDateString('en-CA');
+    try {
+      const res = await RestaurantApi.get(`management/table-bookings/?restaurant=${restaurant_id}&booking_date=${today}&checked_in=true&checked_out=false`);
+      setcheckedInUser(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const searchCustomerBooking = async (mobile_no) => {
+    const today = new Date().toLocaleDateString('en-CA');
+    try {
+      const res = await RestaurantApi.get(`management/table-bookings/?user_mobile_no=${mobile_no}&booking_date=${today}&checked_in=false&checked_out=false&status_not=cancelled`);
+      return res.data;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const checkInOut = async (booking_id, data) => {
+  try {
+    await RestaurantApi.patch(`management/table-bookings/${booking_id}/`, data);
+    await fetchCheckedInBookings(); // <-- use await here
+  } catch (err) {
+    console.error(err);
+  }
+  };
+
+  //--------------------------------------------------
+  // Welcome Email Send
+  //==================================================
 
   const sendWelcomeEmail = (owner_name, res_name, to_email) => {
     const templateParams = {
@@ -343,7 +399,7 @@ const deleteTable = async (id) => {
   }, [isLoggedIn]);
 
   return (
-    <RestaurantContext.Provider value={{ isLoggedIn, login, logout, restaurantData, staffData, fetchStaffData, addStaff, updateStaff, deleteStaff, categories, fetchCategories, addCategory, deleteCategory, items, fetchItems, addItem, updateItem, deleteItem, sendWelcomeEmail, tablesData, fetchTablesData, addTable, updateTable, deleteTable, activeOrders, fetchTodayActiveOrders, updateItemStatus, updateOrderStatus}}>
+    <RestaurantContext.Provider value={{ isLoggedIn, login, logout, restaurantData, updateRestaurantData, staffData, fetchStaffData, addStaff, updateStaff, deleteStaff, categories, fetchCategories, addCategory, deleteCategory, items, fetchItems, addItem, updateItem, deleteItem, sendWelcomeEmail, tablesData, fetchTablesData, addTable, updateTable, deleteTable, activeOrders, fetchTodayActiveOrders, updateItemStatus, updateOrderStatus , checkedInUser, fetchCheckedInBookings, searchCustomerBooking, checkInOut}}>
       {props.children}
     </RestaurantContext.Provider>
   );

@@ -1,24 +1,3 @@
-// import { useContext } from "react";
-// import { ResturantContext } from "../../../context/Context";
-// const Dashboard = () => {
-//   const { restaurantData } = useContext(ResturantContext);
-
-//   return (
-//     <div>
-//       <h1>Restaurant Dashboard</h1>
-//       {restaurantData && (
-//         <div>
-//           <h2>Restaurant: {restaurantData.res_name}</h2>
-//           <p>Location: {restaurantData.city}</p>
-//         </div>
-//       )}
-//       <p>Manage your restaurant settings and view analytics here.</p>
-//     </div>
-//   );
-// };
-
-// export default Dashboard;
-
 import React, { useState, useEffect, useContext } from 'react';
 import { Container, Row, Col, Card, Button, Form, ProgressBar, Badge, Alert } from 'react-bootstrap';
 import { RestaurantContext } from '../../../context/Context'; 
@@ -79,11 +58,14 @@ const AnalyticsCard = ({ title, value, icon, color }) => (
 
 const SettingsForm = ({ settings, onSettingsChange, onSave }) => {
   const handleInputChange = (e) => {
+     // eslint-disable-next-line
     const { name, value, type, checked } = e.target;
     if (name.startsWith('hours.')) {
+       // eslint-disable-next-line
       const [_, day, timeType] = name.split('.');
       onSettingsChange({ ...settings, hours: { ...settings.hours, [day]: { ...settings.hours[day], [timeType]: value } } });
     } else if (name.startsWith('notifications.')) {
+       // eslint-disable-next-line
       const [_, notifType] = name.split('.');
       onSettingsChange({ ...settings, notifications: { ...settings.notifications, [notifType]: checked } });
     } else {

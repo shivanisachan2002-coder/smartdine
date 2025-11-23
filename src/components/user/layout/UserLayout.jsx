@@ -4,13 +4,11 @@ import Footer from "./Footer";
 
 const UserLayout = () => {
   return (
-    <>
       <div>
         <Header />
         <Outlet />
         <Footer />
       </div>
-    </>
   );
 };
 

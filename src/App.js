@@ -45,12 +45,13 @@ import Menu from "./components/restaurants/menu/Menu";
 import Tables from "./components/restaurants/tables/Tables";
 import Staff from "./components/restaurants/staff/Staff";
 import Bookings from "./components/user/bookings/Bookings";
-import AllBooking from "./components/user/bookings/MyBookings";
 import Orders from "./components/user/orders/Orders";
 import CheckoutOrder from "./components/user/orders/CheckoutOrder";
-import RestaurantReg from "./components/restaurants/RestaurantReg";
 import MyBookings from "./components/user/bookings/MyBookings";
 import MyOrders from "./components/user/orders/MyOrders";
+import CustomerEntryandExit from "./components/restaurants/checkinout/CustomerEntryandExit";
+import UserProfile from "./components/user/settings/UserProfile";
+import Profile from "./components/restaurants/settings/Profile";
 
 const App = () => {
   const { progress } = useContext(MyStateContext);
@@ -116,23 +117,33 @@ const App = () => {
                   <Route path="menu" element={<Menu />} />
                   <Route path="tables" element={<Tables />} />
                   <Route path="staff" element={<Staff />} />
+                  <Route path="check-in-out" element={<CustomerEntryandExit />} />
+                  <Route path="profile" element={<Profile />} />
                 </Route>
               </Route>
 
               <Route element={<UserProtected />}>
                 <Route path="user" element={<UserLayout />}>
+                  {/* User Home Page */}
                   <Route index element={<UserDashboard />} />
+                  {/* User Profile */}
+                  <Route path="profile" element={<UserProfile />} />
+                  {/* User All Bookings */}
                   <Route path="bookings/:id" element={<Bookings />} />
-                  {/* <Route path="booking-details" element={<AllBooking />} /> */}
+                  {/* New Booking for specific Reatauarnt */}
                   <Route path="bookings" element={<MyBookings />} />
+                  {/* <Route path="booking-details" element={<AllBooking />} /> */}
+                  {/* User All Orders Current/Past*/}
                   <Route path="orders" element={<MyOrders />} />
+                   {/* New Order */}
                   <Route path="place-order" element={<Orders />} />
+                   {/* Order Checkout Page  */}
                   <Route path="check-out-order" element={<CheckoutOrder />} />
                 </Route>
               </Route>
 
               {/* Fallback */}
-              <Route path="*" element={<RestaurantReg />} />
+              <Route path="*" element={<NoPage />} />
             </Routes>
           </UserState>
         </RestaurantState>

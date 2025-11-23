@@ -5,13 +5,10 @@ import { UserContext } from '../../context/Context';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom'
 import bgImg from '../../assets/image/user/kitchen-6878026.jpg'
-// import bgImg from '../../assets/image/user/restaurant-1090136.jpg'
-// import bgImg from '../../assets/image/user/outdoor-dining-1846137.jpg'
 
 const UserLogin = () => {
   const navigate = useNavigate();
   const { isLoggedIn, login } = useContext(UserContext);
-
   const [formFields, setFormFields] = useState({
     user_email: '',
     user_password: '',
@@ -56,14 +53,14 @@ const UserLogin = () => {
   };
 
   useEffect(() => {
-    document.title = "User Login | SmartDine";
+    document.title = "User Login | SmartDine 🍽️";
     if (isLoggedIn) {
       navigate('/user');
     }
   }, [isLoggedIn, navigate]);
 
   return (
-    
+
     <div className='smartdine-banner' style={{ backgroundImage: `url(${bgImg})` }} id='userlogin'>
       <div className="smartdine-overlay opacity-75"></div>
       <div className="position-relative z-1 w-100">

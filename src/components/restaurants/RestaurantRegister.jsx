@@ -176,7 +176,8 @@ const RestaurantRegister = () => {
 
   useEffect(() => {
     getLocations();
-  }, [getLocations]);
+    // eslint-disable-next-line
+  }, []);
 
   return (
     <>

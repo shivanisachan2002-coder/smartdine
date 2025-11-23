@@ -21,6 +21,7 @@ const RestaurantLayout = () => {
     { "id": 4, "icon": "grid", "name": "menu", "target": "menu" },
     { "id": 5, "icon": "gear-wide-connected", "name": "tables", "target": "tables" },
     { "id": 6, "icon": "people-fill", "name": "staff", "target": "staff" },
+    { "id": 7, "icon": "box-arrow-right", "name": "check-in-out", "target": "check-in-out" },
   ];
 
   // Handle logout with toast promise
@@ -104,9 +105,9 @@ const RestaurantLayout = () => {
                       <img src={image} alt="Profile" className="rounded-circle object-fit-fill" width="45" height="45" />
                     </Link>
 
-                    <ul className="dropdown-menu text-small shadow-sm mt-3" style={{ left: "-120px" }}>
+                    <ul className="dropdown-menu text-small shadow-sm mt-" style={{ left: "-120px" }}>
                       <li><Link className="dropdown-item" to="/"><i className='bi bi-gear me-2'></i>Settings</Link></li>
-                      <li><Link className="dropdown-item" to="/"><i className='bi bi-person me-2'></i>Profile</Link></li>
+                      <li><Link className="dropdown-item" to="profile"><i className='bi bi-person me-2'></i>Profile</Link></li>
                       <li><hr className="dropdown-divider" /></li>
                       <li>
                         <Link className="dropdown-item" onClick={() =>

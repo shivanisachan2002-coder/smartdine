@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { UserContext } from './Context';
 import { useCallback } from 'react';
 import { jwtDecode } from 'jwt-decode';
-
 import { useNavigate } from 'react-router-dom';
 import UserApi from '../apiservice/UserApi';
 import axios from 'axios';
@@ -17,6 +16,8 @@ const UserState = (props) => {
       const { exp } = jwtDecode(token);
       return Date.now() >= exp * 1000;
     } catch {
+      setIsLoggedIn(false);
+      navigate('/user-login');
       return true;
     }
   };
@@ -80,6 +81,18 @@ const UserState = (props) => {
       });
   };
 
+  // Update User Details Handler : Update Details
+  const updateUserData = async (updatedData) => {
+    const user_id = localStorage.getItem('user_id');
+    try {
+      await UserApi.patch(`user/details/${user_id}/`, updatedData);
+      return true;
+    } catch (error) {
+      console.log("Error response:", error.response?.data);
+      return false;
+    }
+  }
+
   const [localRestaurantData, setLocalRestaurantData] = useState([]);
 
   // Local Restaurants Handler: Fetch Local Restaurants
@@ -105,81 +118,89 @@ const UserState = (props) => {
       });
   };
 
-
   const [restaurantTables, setRestaurantTables] = useState([]);
+  // Fetch restaurant tables with proper error handling
+  const fetchRestaurantTables = (restaurant_id) => {
+    if (!restaurant_id) {
+      console.error("No restaurant ID provided");
+      setRestaurantTables([]);
+      return;
+    }
 
-// Fetch restaurant tables with proper error handling
-const fetchRestaurantTables = (restaurant_id) => {
-  if (!restaurant_id) {
-    console.error("No restaurant ID provided");
-    setRestaurantTables([]);
-    return;
-  }
+    // Clean the ID (remove trailing slashes, trim whitespace)
+    const cleanId = String(restaurant_id).trim().replace(/\/$/, '');
 
-  // Clean the ID (remove trailing slashes, trim whitespace)
-  const cleanId = String(restaurant_id).trim().replace(/\/$/, '');
-  
-  console.log('Fetching tables for restaurant:', cleanId);
-  
-  UserApi.get(`management/tables/?restaurant=${cleanId}`)
-    .then(response => {
-      console.log('Tables fetched:', response.data);
-      setRestaurantTables(response.data);
-    })
-    .catch(error => {
-      console.error("Error fetching tables:", error);
-      console.error("Error response:", error.response?.data);
-      setRestaurantTables([]); // Reset to empty array on error
-    });
-};
+    console.log('Fetching tables for restaurant:', cleanId);
 
-// Fetch bookings with proper error handling
-const fetchBookingsForDateTime = async (restaurantId, date, time = null) => {
-  try {
-    if (!restaurantId || !date) {
-      console.error("Missing required parameters");
+    UserApi.get(`management/tables/?restaurant=${cleanId}`)
+      .then(response => {
+        console.log('Tables fetched:', response.data);
+        setRestaurantTables(response.data);
+      })
+      .catch(error => {
+        console.error("Error fetching tables:", error);
+        console.error("Error response:", error.response?.data);
+        setRestaurantTables([]); // Reset to empty array on error
+      });
+  };
+
+  // Fetch bookings with proper error handling
+  const fetchBookingsForDateTime = async (restaurantId, date, time = null) => {
+    try {
+      if (!restaurantId || !date) {
+        console.error("Missing required parameters");
+        return [];
+      }
+
+      // Clean the ID
+      const cleanId = String(restaurantId).trim().replace(/\/$/, '');
+
+      // Build URL based on whether time is provided
+      let url = `management/table-bookings/?restaurant=${cleanId}&booking_date=${date}`;
+
+      // Only add time filter if explicitly provided
+      if (time) {
+        url += `&booking_time=${time}`;
+      }
+
+      console.log('Fetching bookings:', url);
+      const response = await UserApi.get(url);
+      console.log('Bookings fetched:', response.data);
+
+      return response.data;
+    } catch (err) {
+      console.error("Error fetching bookings:", err);
+      console.error("Error response:", err.response?.data);
       return [];
     }
+  };
 
-    // Clean the ID
-    const cleanId = String(restaurantId).trim().replace(/\/$/, '');
-    
-    // Build URL based on whether time is provided
-    let url = `management/table-bookings/?restaurant=${cleanId}&booking_date=${date}`;
-    
-    // Only add time filter if explicitly provided
-    if (time) {
-      url += `&booking_time=${time}`;
+  // Create a new table booking
+  const createTableBooking = async (bookingData) => {
+    try {
+      const response = await UserApi.post('management/table-bookings/', bookingData);
+      console.log('Booking created:', response.data);
+      return { success: true, data: response.data };
+    } catch (error) {
+      console.error('Error creating booking:', error);
+      console.error('Error response:', error.response?.data);
+      return {
+        success: false,
+        error: error.response?.data || 'Failed to create booking'
+      };
     }
-    
-    console.log('Fetching bookings:', url);
-    const response = await UserApi.get(url);
-    console.log('Bookings fetched:', response.data);
-    
-    return response.data;
-  } catch (err) {
-    console.error("Error fetching bookings:", err);
-    console.error("Error response:", err.response?.data);
-    return [];
-  }
-};
+  };
 
-// Create a new table booking
-const createTableBooking = async (bookingData) => {
-  try {
-    const response = await UserApi.post('management/table-bookings/', bookingData);
-    console.log('Booking created:', response.data);
-    return { success: true, data: response.data };
-  } catch (error) {
-    console.error('Error creating booking:', error);
-    console.error('Error response:', error.response?.data);
-    return { 
-      success: false, 
-      error: error.response?.data || 'Failed to create booking' 
-    };
-  }
-};
-
+  const [myBookings, setMyBookings] = useState([]);
+  // fetch Specific user All Bookings
+  const fetchMyAllBookings = async (bookingId) => {
+    try {
+      const response = await UserApi.get(`management/table-bookings/?user=${bookingId}`);
+      setMyBookings(response.data);
+    } catch (error) {
+      console.log('Error response:', error.response?.data);
+    }
+  };
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -196,7 +217,7 @@ const createTableBooking = async (bookingData) => {
   }, [isLoggedIn, getLocation]);
 
   return (
-    <UserContext.Provider value={{ isLoggedIn, login, logout, userData, location, localRestaurantData, restaurantData, fetchRestaurantDetails, restaurantTables, fetchRestaurantTables, fetchBookingsForDateTime, createTableBooking}}>
+    <UserContext.Provider value={{ isLoggedIn, login, logout, userData, updateUserData, location, localRestaurantData, restaurantData, fetchRestaurantDetails, restaurantTables, fetchRestaurantTables, fetchBookingsForDateTime, createTableBooking, myBookings, fetchMyAllBookings }}>
       {props.children}
     </UserContext.Provider>
   )
