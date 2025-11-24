@@ -48,9 +48,9 @@ const CustomerEntryandExit = () => {
     };
 
     return (
-        <div className="container-fluid mt-3">
+        <div className="container-fluid mt-3 px-md-2 px-0">
             <div className="row justify-content-center">
-                <div className="col-md-12">
+                <div className="col-md-12 px-0">
                     <div className="card border">
                         <div className="card-header bg-light text-dark" style={{ borderRadius: "0.3rem 0.3rem 0 0" }}>
                             <h4 className="mb-0 text-center">

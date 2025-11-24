@@ -202,6 +202,64 @@ const UserState = (props) => {
     }
   };
 
+
+  // Get All Menu from Specific Restaurant
+  const [restaurantMenuItems, setRestaurantMenuItems] = useState([]);
+  // fetch Specific user All Bookings
+  const fetchRestaurantItems = async (restaurant_id) => {
+    try {
+      const response = await UserApi.get(`management/menu-items/?restaurant=${restaurant_id}`);
+      setRestaurantMenuItems(response.data);
+    } catch (error) {
+      console.log('Error response:', error.response?.data);
+    }
+  };
+
+  // Fetch All orders details of specific user
+  const [userAllOrders, setuserAllOrders] = useState([]);
+
+  const fetchUserAllOrders = async () => {
+    const user_id = localStorage.getItem("user_id");
+    try {
+      const response = await UserApi.get(`management/orders/?customer=${user_id}`);
+      setuserAllOrders(response.data);
+    } catch (error) {
+      console.log('Error response:', error.response?.data);
+    }
+  };
+
+  // Create New Order
+  const placeNewOrder = async (orderDetails) => {
+    try {
+      const response = await UserApi.post(`management/orders/`, orderDetails);
+      // return full response so you can get id
+      return response;
+    } catch (error) {
+      console.log('Error response:', error.response?.data);
+    }
+  };
+
+  // Add Item Into New Order
+  const addItemIntoNewOrder = async (ordered_data) => {
+    try {
+      const response = await UserApi.post(`management/order-items/`, ordered_data);
+      console.log(response.data);
+    } catch (error) {
+      console.log('Error response:', error.response?.data);
+    }
+  };
+
+  const addItemsToOrder = async (orderId, cartItems) => {
+    for (const item of cartItems) {
+      const ordered_data = {
+        order: orderId,           // order PK returned from backend
+        menu_item: item.id,       // menu item PK
+        quantity: item.quantity
+      };
+      await addItemIntoNewOrder(ordered_data);
+    }
+  };
+
   useEffect(() => {
     if (isLoggedIn) {
       navigator.geolocation.getCurrentPosition(getLocation);
@@ -217,7 +275,7 @@ const UserState = (props) => {
   }, [isLoggedIn, getLocation]);
 
   return (
-    <UserContext.Provider value={{ isLoggedIn, login, logout, userData, updateUserData, location, localRestaurantData, restaurantData, fetchRestaurantDetails, restaurantTables, fetchRestaurantTables, fetchBookingsForDateTime, createTableBooking, myBookings, fetchMyAllBookings }}>
+    <UserContext.Provider value={{ isLoggedIn, login, logout, userData, updateUserData, location, localRestaurantData, restaurantData, fetchRestaurantDetails, restaurantTables, fetchRestaurantTables, fetchBookingsForDateTime, createTableBooking, myBookings, fetchMyAllBookings, restaurantMenuItems, fetchRestaurantItems, placeNewOrder, addItemsToOrder, userAllOrders, fetchUserAllOrders}}>
       {props.children}
     </UserContext.Provider>
   )

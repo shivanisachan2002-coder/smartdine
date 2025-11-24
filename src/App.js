@@ -1,16 +1,22 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Aos from "aos";
 import "./App.scss";
+import { useEffect, useContext } from "react";
+import { Toaster } from "react-hot-toast";
+import { MyStateContext } from "./context/Context";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+// All States 
 import RestaurantState from "./context/RestaurantState";
 import UserState from "./context/UserState";
 import MainState from "./context/MainState";
 // import AdminState from "./context/AdminState";
 
+// General 
+import Main from "./components/general/Main";
 import GeneralLayout from "./components/general/layout/GeneralLayout";
 // import AdminLayout from "./components/admin/AdminLayout";
 import UserLayout from "./components/user/layout/UserLayout";
 import RestaurantLayout from "./components/restaurants/layout/RestaurantLayout";
-import NoPage from "./components/error/NoPage";
 
 // import AdminLogin from "./components/admin/AdminLogin";
 import UserLogin from "./components/user/UserLogin";
@@ -21,20 +27,12 @@ import UserDashboard from "./components/user/layout/UserDashboard";
 import LoadingBar from "react-top-loading-bar";
 import Top from "./components/master/Top";
 
-import { Toaster } from "react-hot-toast";
-
-import { useContext } from "react";
-import { MyStateContext } from "./context/Context";
-import Main from "./components/general/Main";
-import UserProtected from "./components/user/UserProtected";
 
 import ForgetPassword from "./components/master/ForgetPassword";
 import ResetPassword from "./components/master/ResetPassword";
 import OtpVerification from "./components/master/OtpVerification";
-import ParternsWithUs from "./components/restaurants/partners/ParternsWithUs";
+import NoPage from "./components/error/NoPage";
 import Upi from "./components/UPI";
-import Aos from "aos";
-import { useEffect } from "react";
 
 // Restaurant Routes Import
 import RestaurantProtected from "./components/restaurants/RestaurantProtected";
@@ -44,14 +42,17 @@ import OrdersList from "./components/restaurants/orders/OrdersList";
 import Menu from "./components/restaurants/menu/Menu";
 import Tables from "./components/restaurants/tables/Tables";
 import Staff from "./components/restaurants/staff/Staff";
-import Bookings from "./components/user/bookings/Bookings";
-import Orders from "./components/user/orders/Orders";
-import CheckoutOrder from "./components/user/orders/CheckoutOrder";
-import MyBookings from "./components/user/bookings/MyBookings";
-import MyOrders from "./components/user/orders/MyOrders";
 import CustomerEntryandExit from "./components/restaurants/checkinout/CustomerEntryandExit";
-import UserProfile from "./components/user/settings/UserProfile";
 import Profile from "./components/restaurants/settings/Profile";
+import ParternsWithUs from "./components/restaurants/partners/ParternsWithUs";
+
+// Users Routes Import
+import UserProtected from "./components/user/UserProtected";
+import Bookings from "./components/user/bookings/Bookings";
+import MyBookings from "./components/user/bookings/MyBookings";
+import UserProfile from "./components/user/settings/UserProfile";
+import NewOrder from "./components/user/orders/NewOrder";
+import MyOrders from "./components/user/orders/MyOrders";
 
 const App = () => {
   const { progress } = useContext(MyStateContext);
@@ -85,10 +86,8 @@ const App = () => {
 
                 {/* Restaurant routes */}
                 <Route path="restaurant-login" element={<RestaurantLogin />} />
-                <Route
-                  path="restaurant-register"
-                  element={<RestaurantRegister />}
-                />
+                <Route path="restaurant-register" element={<RestaurantRegister />}
+              />
               </Route>
 
               <Route path="otp-verification" element={<OtpVerification />} />
@@ -134,11 +133,12 @@ const App = () => {
                   <Route path="bookings" element={<MyBookings />} />
                   {/* <Route path="booking-details" element={<AllBooking />} /> */}
                   {/* User All Orders Current/Past*/}
-                  <Route path="orders" element={<MyOrders />} />
+                  <Route path="bookings/new-order/:type/:bookingId/:restaurantId/:userId" element={<NewOrder />} />
+
                    {/* New Order */}
-                  <Route path="place-order" element={<Orders />} />
+                  <Route path="orders" element={<MyOrders />} />
                    {/* Order Checkout Page  */}
-                  <Route path="check-out-order" element={<CheckoutOrder />} />
+                  {/* <Route path="check-out-order" element={<CheckoutOrder />} /> */}
                 </Route>
               </Route>
 

@@ -293,12 +293,10 @@ const RestaurantState = (props) => {
 
   const fetchTodayActiveOrders = async () => {
     const restaurant_id = localStorage.getItem('restaurant_reg_id');
-    // const today = new Date().toISOString().split('T')[0];
     const today = new Date().toLocaleDateString('en-CA');
-    console.log(today);
 
     try {
-      const res = await RestaurantApi.get(`management/orders/?restaurant=${restaurant_id}&tables__booking_date=${today}&tables__checked_in=true&status_not=completed`);
+      const res = await RestaurantApi.get(`management/orders/?restaurant=${restaurant_id}&table__booking_date=${today}&table__checked_in=true&status_not=completed`);
       setActiveOrders(res.data);
     } catch (err) {
       console.error(err);

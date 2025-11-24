@@ -13,7 +13,7 @@ const Orders = () => {
     // Set up interval for every 1 minute
     const intervalId = setInterval(() => {
       fetchTodayActiveOrders();
-    }, 10000); // 10000 ms = 10 seconds
+    }, 5000); // 5000 ms = 5 seconds
 
     // Clean up interval when component unmounts
     return () => clearInterval(intervalId);
@@ -21,7 +21,7 @@ const Orders = () => {
   }, []);
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-4 px-md-2 px-0">
       <Row className="mb-3">
         <Col md={6}>
           <h3><i className="bi bi-cart4 me-2"></i>Active Orders</h3>

@@ -1,5 +1,5 @@
 import { useState, useMemo, useContext, useEffect } from "react";
-import { Table,Button, Modal, Form, Pagination, InputGroup, Image,} from "react-bootstrap";
+import { Table, Button, Modal, Form, Pagination, InputGroup, Image, } from "react-bootstrap";
 
 import { RestaurantContext } from "../../../context/Context";
 
@@ -204,48 +204,48 @@ const Staff = () => {
 
   // ==================== Save Changes ====================
   const handleSaveChanges = async () => {
-  if (!currentStaff) return;
+    if (!currentStaff) return;
 
-  // Prepare PATCH payload with only changed fields
-  const formDataPayload = new FormData();
-  let useFormData = false;
+    // Prepare PATCH payload with only changed fields
+    const formDataPayload = new FormData();
+    let useFormData = false;
 
-  // Only append fields that have a non-empty value and are changed or mandatory
-  // If imageFile exists, use FormData and append it
-  if (currentStaff.imageFile) {
-    useFormData = true;
-    formDataPayload.append("image", currentStaff.imageFile);
-  }
+    // Only append fields that have a non-empty value and are changed or mandatory
+    // If imageFile exists, use FormData and append it
+    if (currentStaff.imageFile) {
+      useFormData = true;
+      formDataPayload.append("image", currentStaff.imageFile);
+    }
 
-  // Append other fields only if they are non-empty or changed
-  // (You can customize change detection as needed)
-  if (currentStaff.name) formDataPayload.append("name", currentStaff.name);
-  if (currentStaff.email) formDataPayload.append("email", currentStaff.email);
-  if (currentStaff.contact_number) formDataPayload.append("contact_number", currentStaff.contact_number);
-  if (currentStaff.address) formDataPayload.append("address", currentStaff.address);
-  if (currentStaff.role) formDataPayload.append("role", currentStaff.role);
-  if (currentStaff.salary) formDataPayload.append("salary", currentStaff.salary);
-  if (currentStaff.restaurant) formDataPayload.append("restaurant", currentStaff.restaurant);
+    // Append other fields only if they are non-empty or changed
+    // (You can customize change detection as needed)
+    if (currentStaff.name) formDataPayload.append("name", currentStaff.name);
+    if (currentStaff.email) formDataPayload.append("email", currentStaff.email);
+    if (currentStaff.contact_number) formDataPayload.append("contact_number", currentStaff.contact_number);
+    if (currentStaff.address) formDataPayload.append("address", currentStaff.address);
+    if (currentStaff.role) formDataPayload.append("role", currentStaff.role);
+    if (currentStaff.salary) formDataPayload.append("salary", currentStaff.salary);
+    if (currentStaff.restaurant) formDataPayload.append("restaurant", currentStaff.restaurant);
 
-  // If using FormData, call patch with FormData, else use normal JSON object
-  if (useFormData) {
-    await updateStaff(currentStaff.id, formDataPayload);
-  } else {
-    // Build a JSON object with non-empty fields
-    const jsonPayload = {};
-    if (currentStaff.name) jsonPayload.name = currentStaff.name;
-    if (currentStaff.email) jsonPayload.email = currentStaff.email;
-    if (currentStaff.contact_number) jsonPayload.contact_number = currentStaff.contact_number;
-    if (currentStaff.address) jsonPayload.address = currentStaff.address;
-    if (currentStaff.role) jsonPayload.role = currentStaff.role;
-    if (currentStaff.salary) jsonPayload.salary = currentStaff.salary;
-    if (currentStaff.restaurant) jsonPayload.restaurant = currentStaff.restaurant;
+    // If using FormData, call patch with FormData, else use normal JSON object
+    if (useFormData) {
+      await updateStaff(currentStaff.id, formDataPayload);
+    } else {
+      // Build a JSON object with non-empty fields
+      const jsonPayload = {};
+      if (currentStaff.name) jsonPayload.name = currentStaff.name;
+      if (currentStaff.email) jsonPayload.email = currentStaff.email;
+      if (currentStaff.contact_number) jsonPayload.contact_number = currentStaff.contact_number;
+      if (currentStaff.address) jsonPayload.address = currentStaff.address;
+      if (currentStaff.role) jsonPayload.role = currentStaff.role;
+      if (currentStaff.salary) jsonPayload.salary = currentStaff.salary;
+      if (currentStaff.restaurant) jsonPayload.restaurant = currentStaff.restaurant;
 
-    await updateStaff(currentStaff.id, jsonPayload);
-  }
+      await updateStaff(currentStaff.id, jsonPayload);
+    }
 
-  await fetchStaffData();
-  setShowEditModal(false);
+    await fetchStaffData();
+    setShowEditModal(false);
   };
 
   // ==================== Delete Staff ====================
@@ -273,7 +273,14 @@ const Staff = () => {
 
   return (
     <div className="container-fluid p-md-4 px-0 py-2">
-      <div className="card border-0 shadow-sm">
+
+      <div className="card shadow-sm border">
+        <div className="card-header bg-light text-dark" style={{ borderRadius: "0.3rem 0.3rem 0 0" }}>
+          <h4 className="mb-0 text-center">
+            <i className="bi bi-people-fill me-2"></i>
+            Staff Management
+          </h4>
+        </div>
         <div className="card-body">
           <div className="d-flex justify-content-between flex-md-row flex-column-reverse mb-3">
             {/* Show entries */}
@@ -366,7 +373,7 @@ const Staff = () => {
                         src={staff.image}
                         roundedCircle
                         alt={staff.name}
-                        style={{ width: 44, height: 44, objectFit: "cover" }}
+                        style={{ width: 45, height: 45, objectFit: "cover" }}
                       />
                       <div className="ms-3">
                         <h6 className="mb-0 fw-bold">{staff.name}</h6>
@@ -386,7 +393,7 @@ const Staff = () => {
 
                   <td>{staff.address}</td>
 
-                  <td className="text-end">₹ {staff.salary}</td>
+                  <td className="text-end">₹{staff.salary}</td>
 
                   <td className="text-center">
                     <Button
