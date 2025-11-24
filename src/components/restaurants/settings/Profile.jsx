@@ -130,7 +130,7 @@ const Profile = () => {
       )}
       <div className="row">
         {/* Left Column */}
-        <div className="col-lg-5 mb-4">
+        <div className="col-lg-5 mb-4 px-md-2 px-0">
           {/* Owner Details */}
           <div className="card shadow-sm mb-4">
             <div className="card-header bg-light">
@@ -211,7 +211,7 @@ const Profile = () => {
           </div>
         </div>
         {/* Right Column */}
-        <div className="col-lg-7 mb-4">
+        <div className="col-lg-7 mb-4 px-md-2 px-0">
           <div className="card shadow-sm h-100">
             <div className="card-header bg-light">
               <h5 className="mb-0"><i className="bi bi-shop me-2"></i>Restaurant Details</h5>

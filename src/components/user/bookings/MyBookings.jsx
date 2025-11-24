@@ -27,6 +27,12 @@ const MyBookings = () => {
   useEffect(() => {
     const userId = localStorage.getItem("user_id");
     if (userId) fetchMyAllBookings(userId);
+    const intervalId = setInterval(() => {
+      fetchMyAllBookings(userId);
+    }, 5000); // 5000 ms = 5 seconds
+
+    // Clean up interval when component unmounts
+    return () => clearInterval(intervalId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -70,12 +76,13 @@ const MyBookings = () => {
 
   return (
     <div className="container my-5">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1>
+      <div className="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+        <h2>
           <i className="bi bi-journal-bookmark me-2"></i>
           My Bookings
-        </h1>
+        </h2>
       </div>
+      
       {myBookings.length === 0 ? (
         <div className="card text-center p-5 border-0 shadow-sm">
           <div className="card-body">

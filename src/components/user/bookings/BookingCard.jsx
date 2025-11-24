@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const statusColors = {
   booked: "secondary",
@@ -139,14 +140,17 @@ const BookingCard = ({
                   <i className="bi bi-geo-alt-fill me-1"></i>Location
                 </button>
                 {buttonState.show && (
-                  <button
-                    className={`btn btn-${buttonState.variant} btn-sm`}
-                    onClick={() => onOrderClick(booking, buttonState.action)}
-                    disabled={buttonState.disabled}
-                  >
-                    <i className={`bi ${buttonState.action === 'preorder' ? 'bi-cart-plus' : 'bi-bag-check'} me-1`}></i>
-                    {buttonState.text}
-                  </button>
+                  <Link
+  to={`new-order/${buttonState.action}/${booking.id}/${booking.restaurant_detail.id}/${booking.user_detail.id}`}
+  className={`btn btn-${buttonState.variant} btn-sm`}
+  style={{
+    pointerEvents: buttonState.disabled ? "none" : "auto",
+    opacity: buttonState.disabled ? 0.5 : 1
+  }}
+>
+  <i className={`bi ${buttonState.action === 'preorder' ? 'bi-cart-plus' : 'bi-bag-check'} me-1`}></i>
+  {buttonState.text}
+</Link>
                 )}
               </div>
             </div>

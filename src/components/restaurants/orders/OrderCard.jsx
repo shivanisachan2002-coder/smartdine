@@ -14,8 +14,8 @@ const OrderCard = ({ order }) => {
     const { updateItemStatus, updateOrderStatus } = useContext(RestaurantContext);
 
     // Booking date and time (first table, from API)
-    const bookingDate = order.tables?.[0]?.booking_date || '-';
-    const bookingTime = formatTime(order.tables?.[0]?.booking_time) || '-';
+    const bookingDate = order.table?.booking_date || '-';
+    const bookingTime = formatTime(order.table?.booking_time) || '-';
 
     const handleStatusChange = (e) => {
         const newStatus = e.target.value;
@@ -70,7 +70,7 @@ const OrderCard = ({ order }) => {
                     <hr />
                     {/* Table details */}
                     <p>
-                        <b>Table No:</b> {order.tables.map((table) => table.table.table_number).join(", ")}
+                        <b>Table No:</b> {order.table?.table_detail?.table_number}
                     </p>
                     {/* Items Heading */}
                     <h6 className="mt-3">
