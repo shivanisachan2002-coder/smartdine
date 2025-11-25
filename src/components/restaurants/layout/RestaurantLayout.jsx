@@ -94,7 +94,7 @@ const RestaurantLayout = () => {
                     <span className="navbar-toggler-icon"></span>
                   </button>
 
-                  <span className="h3 fw-semibold f1 text-capitalize ms-md-0 ms-5">{location.pathname.split('/')[2]}</span>
+                  <span className="h3 fw-semibold f1 text-capitalize ms-md-0 ms-5">{location.pathname.split('/')[3]}</span>
                   <div>
 
                   </div>

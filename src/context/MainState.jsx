@@ -16,8 +16,20 @@ const MainState = (props) => {
     }
   }
 
+  const [contactData, setContactData] = useState([]);
+  const fetchAllExistingContacts = async () => {
+    try {
+      const response = await ApiService.get('check-existing-contacts/')
+      
+      setContactData(response.data);
+    } catch (error) {
+      console.error('Error fetching users:', error)
+      return []
+    }
+  }
+
   return (
-    <MainContext.Provider value={{ mainData, setMainData, locations, getLocations }}>
+    <MainContext.Provider value={{ mainData, setMainData, locations, getLocations, contactData, fetchAllExistingContacts }}>
       {props.children}
     </MainContext.Provider>
   )
