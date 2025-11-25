@@ -61,7 +61,7 @@ const App = () => {
   }, []);
 
   return (
-    <BrowserRouter basename="/smartdine">
+    <BrowserRouter basename="/smartdine-">
       <Top />
       <LoadingBar
         color="#E2293F"
