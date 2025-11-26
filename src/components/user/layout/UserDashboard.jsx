@@ -67,7 +67,7 @@ const UserDashboard = () => {
           <div className="row g-4">
             {filteredRestaurants.map((restaurant) => (
               <div key={restaurant.id} className="col-md-6 col-lg-4">
-                <div className="card h-100 shadow-sm border-0 rounded-4 hover-lift">
+                <div className="card h-100 shadow-sm border rounded-4 hover-lift">
                   <div className="position-relative overflow-hidden rounded-top">
                     <img
                       src={restaurant.restaurant_image}
