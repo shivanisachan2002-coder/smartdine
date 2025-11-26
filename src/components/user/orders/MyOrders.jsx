@@ -1,5 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import { UserContext } from '../../../context/Context';
+import {
+  BsClockHistory, BsCheckCircle, BsCheck2All, BsXCircle, BsArrowLeftCircle,
+  BsBagCheck, BsListUl, BsFolderMinus, BsCalendarCheck, BsPeopleFill,
+  BsTable, BsChevronDoubleLeft, BsChevronDoubleRight
+} from "react-icons/bs";
 
 const TABLE_NAMES = {
   1: "Standard", 2: "Standard", 3: "Standard", 4: "Standard",
@@ -7,11 +12,11 @@ const TABLE_NAMES = {
 };
 
 const STATUS_CONFIG = {
-  pending: { color: "warning", icon: "bi bi-clock-history" },
-  preparing: { color: "secondary", icon: "bi bi-check-circle" },
-  completed: { color: "success", icon: "bi bi-check-circle" },
-  served: { color: "info", icon: "bi bi-check2-all" },
-  cancelled: { color: "danger", icon: "bi bi-x-circle" }
+  pending: { color: "warning", icon: <BsClockHistory /> },
+  preparing: { color: "secondary", icon: <BsCheckCircle /> },
+  completed: { color: "success", icon: <BsCheckCircle /> },
+  served: { color: "info", icon: <BsCheck2All /> },
+  cancelled: { color: "danger", icon: <BsXCircle /> }
 };
 
 const MyOrders = () => {
@@ -20,19 +25,12 @@ const MyOrders = () => {
   const [modalOrder, setModalOrder] = useState(null);
 
   useEffect(() => {
-    // Initial fetch
     fetchUserAllOrders();
-
-    // Set up interval for polling
     const interval = setInterval(() => {
       fetchUserAllOrders();
     }, 5000);
-
-    // Cleanup interval on unmount
     return () => clearInterval(interval);
-    // eslint-disable-next-line
-  }, []);
-
+  }, [fetchUserAllOrders]);
 
   const today = new Date().setHours(0, 0, 0, 0);
 
@@ -51,7 +49,7 @@ const MyOrders = () => {
       month: "short", day: "numeric", year: "numeric"
     });
 
-  // Modal: show image, name, category, status only
+  // Modal for order items details
   const OrderItemModal = ({ order, onClose }) => (
     <div
       className="modal fade show"
@@ -67,7 +65,7 @@ const MyOrders = () => {
         <div className="modal-content">
           <div className="modal-header bg-light">
             <h5 className="modal-title fw-bold">
-              Order #{order.id} Items
+              <BsBagCheck className="me-2 text-success" /> Order #{order.id} Items
             </h5>
             <button type="button" className="btn-close" onClick={onClose} />
           </div>
@@ -93,14 +91,14 @@ const MyOrders = () => {
                     <div className="flex-grow-1">
                       <div className="fw-bold">{item.menu_item.name}</div>
                       <div className="badge bg-primary me-2">
+                        <BsListUl className="me-1" />
                         {item.menu_item.category_detail?.name}
                       </div>
                     </div>
                     <span
-                      className={`badge rounded-pill ${item.prepared
-                          ? "bg-success"
-                          : "bg-warning text-dark"
-                        }`}
+                      className={`badge rounded-pill ${
+                        item.prepared ? "bg-success" : "bg-warning text-dark"
+                      }`}
                     >
                       {item.prepared ? "Prepared" : "Pending"}
                     </span>
@@ -113,6 +111,7 @@ const MyOrders = () => {
           </div>
           <div className="modal-footer">
             <button type="button" className="btn btn-secondary" onClick={onClose}>
+              <BsArrowLeftCircle className="me-2" />
               Close
             </button>
           </div>
@@ -123,46 +122,63 @@ const MyOrders = () => {
 
   return (
     <div className="container my-5">
-      <div className="mb-4">
-        <h2 className="fw-bold">My Orders</h2>
+      <div className="mb-4 d-flex justify-content-between align-items-center">
+        <h2 className="fw-bold d-flex align-items-center">
+          <BsFolderMinus className="me-2 text-primary" />
+          My Orders
+        </h2>
       </div>
+        <hr />
       {/* Summary Cards */}
       <div className="row g-3 mb-4">
-        {[
-          { label: "Current", value: currentOrders.length, color: "primary" },
-          { label: "Past", value: pastOrders.length, color: "info" }
-        ].map(({ label, value, color }) => (
+        {[{
+          label: "Current",
+          value: currentOrders.length,
+          color: "primary",
+          icon: <BsCalendarCheck />
+        }, {
+          label: "Past",
+          value: pastOrders.length,
+          color: "info",
+          icon: <BsClockHistory />
+        }].map(({ label, value, color, icon }) => (
           <div key={label} className="col-12 col-md-6 col-lg-3">
             <div className={`card border-0 shadow-sm bg-${color} bg-opacity-10`}>
-              <div className="card-body text-center">
+              <div className="card-body text-center d-flex flex-column align-items-center justify-content-center gap-2">
+                <div className={`display-5 text-${color}`}>
+                  {icon}
+                </div>
                 <h3 className={`text-${color}`}>{value}</h3>
-                <p className="mb-0 fw-semibold small">{label}</p>
+                <p className="mb-0 fw-semibold small">{label} Orders</p>
               </div>
             </div>
           </div>
         ))}
       </div>
       {/* Orders Table */}
-      <div className="card border-0 shadow-sm mt-2">
+      <div className="card border-0 shadow-sm">
         <div className="card-body">
           <ul className="nav nav-pills mb-3">
             {[
-              { key: "current", label: "Current Orders", count: currentOrders.length },
-              { key: "past", label: "Past Orders", count: pastOrders.length }
-            ].map(({ key, label, count }) => (
+              { key: "current", label: "Current Orders", count: currentOrders.length, icon: <BsTable className="me-1" /> },
+              { key: "past", label: "Past Orders", count: pastOrders.length, icon: <BsClockHistory className="me-1" /> }
+            ].map(({ key, label, count, icon }) => (
               <li key={key} className="nav-item">
                 <button
                   className={`nav-link rounded-pill px-4 fw-bold ${activeTab === key ? "active bg-primary text-white" : ""}`}
                   onClick={() => setActiveTab(key)}
+                  type="button"
                 >
-                  {label} <span className="badge bg-light text-dark ms-2">{count}</span>
+                  {icon} {label} <span className="badge bg-light text-dark ms-2">{count}</span>
                 </button>
               </li>
             ))}
           </ul>
           {displayOrders.length === 0 ? (
-            <div className="text-center py-5">
+            <div className="text-center py-5 text-muted">
+              <BsFolderMinus size={48} className="mb-3" />
               <h5>No {activeTab === "current" ? "upcoming" : "past"} orders</h5>
+              <p>Please check back later or place a new order.</p>
             </div>
           ) : (
             <div className="table-responsive">
@@ -190,16 +206,14 @@ const MyOrders = () => {
                         <td>{order.table.id}</td>
                         <td>
                           <span className={`badge bg-${statusConfig.color} d-flex align-items-center gap-2 px-3`}>
-                            <i className={`${statusConfig.icon} me-1`}></i>
-                            {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                            {statusConfig.icon}
+                            <span>{order.status.charAt(0).toUpperCase() + order.status.slice(1)}</span>
                           </span>
                         </td>
                         <td>{order.table.restaurant_detail?.res_name}</td>
                         <td>
                           Table {order.table.table_detail?.table_number}
-                          <div className="text-muted small">
-                            {TABLE_NAMES[order.table.table_detail?.table_number]}
-                          </div>
+                          <div className="text-muted small">{TABLE_NAMES[order.table.table_detail?.table_number]}</div>
                         </td>
                         <td>{formatDate(order.table.booking_date)}</td>
                         <td>
@@ -210,6 +224,7 @@ const MyOrders = () => {
                         </td>
                         <td>
                           <span className="badge bg-secondary rounded-pill px-3">
+                            <BsPeopleFill className="me-1" />
                             {order.table.number_of_guests}
                           </span>
                         </td>

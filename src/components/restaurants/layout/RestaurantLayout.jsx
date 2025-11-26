@@ -70,7 +70,7 @@ const RestaurantLayout = () => {
               <ul className="nav nav-pills mb-auto">
                 {items.map((item) => (
                   <li className="nav-item" key={item.id}>
-                    <Link to={`${item.target}`} className={`nav-link ${loc === `/smartdine/restaurant/${item.name}` ? 'active' : 'link-body-emphasis'}`} aria-current="page">
+                    <Link to={`${item.target}`} className={`nav-link ${loc === `/smartdine-/restaurant/${item.name}` ? 'active' : 'link-body-emphasis'}`} aria-current="page">
                       <i className={`bi bi-${item.icon}`}></i>
                       <span className='text-capitalize'>{item.name}</span>
                     </Link>
@@ -101,7 +101,7 @@ const RestaurantLayout = () => {
 
                   {/* Profile Dropdown */}
                   <div className="dropdown">
-                    <Link to="/" data-bs-toggle="dropdown" aria-expanded="false">
+                    <Link to="/restaurant" data-bs-toggle="dropdown" aria-expanded="false">
                       <img src={image} alt="Profile" className="rounded-circle object-fit-fill" width="45" height="45" />
                     </Link>
 
@@ -139,7 +139,7 @@ const RestaurantLayout = () => {
                       <ul className="nav nav-pills mb-auto d-flex flex-column">
                         {items.map((item) => (
                           <li className="nav-item" data-bs-dismiss="offcanvas" key={item.id}>
-                            <Link to={item.target} className={`nav-link ${loc === `/smartdine/restaurant/${item.name}` ? 'active' : 'link-body-emphasis'}`} aria-current="page">
+                            <Link to={item.target} className={`nav-link ${loc === `/smartdine-/restaurant/${item.name}` ? 'active' : 'link-body-emphasis'}`} aria-current="page">
                               <i className={`bi bi-${item.icon}`}></i>
                               <span className='text-capitalize'>{item.name}</span>
                             </Link>

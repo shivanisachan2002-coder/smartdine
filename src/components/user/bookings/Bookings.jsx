@@ -2,6 +2,19 @@ import React, { useState, useEffect, useContext } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useParams } from "react-router-dom";
 import { UserContext } from '../../../context/Context';
+import {
+  BsCalendarCheck,
+  BsClockHistory,
+  BsClock,
+  BsInfoCircle,
+  BsPeopleFill,
+  BsTable,
+  BsClipboardData,
+  BsCheckCircle,
+  BsExclamationTriangle,
+  BsBagCheck
+} from "react-icons/bs";
+
 
 const Card = ({ children, className = "" }) => <div className={`card ${className}`}>{children}</div>;
 const CardBody = ({ children }) => <div className="card-body">{children}</div>;
@@ -243,8 +256,8 @@ const Bookings = () => {
           console.error("Error fetching bookings:", err);
           setState(prev => ({ ...prev, availableTables: [], selectedTable: null }));
         });
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.slot, state.guestOption, state.customGuests, restaurantTables, id, state.day.fullDate]);
 
   const updateState = (updates) => setState(prev => ({ ...prev, ...updates }));
@@ -340,8 +353,10 @@ const Bookings = () => {
           <Card>
             <img
               src={restaurantData.restaurant_image || "https://via.placeholder.com/600x400"}
-              className="card-img-top"
+              className="card-img-top img-fluid  w-100"
               alt={restaurantData.res_name}
+              style={{ maxHeight: "250px", objectFit: "cover" }}
+
             />
             <CardBody>
               <h4>{restaurantData.res_name || "Loading..."}</h4>
@@ -406,10 +421,13 @@ const Bookings = () => {
         </div>
 
         {/* Booking Form */}
+        {/* Booking Form */}
         <div className="col-md-7">
           <Card>
             <CardBody>
-              <h5 className="mb-4">Select Date & Time</h5>
+              <h5 className="mb-4">
+                <BsCalendarCheck className="me-2 text-primary" /> Select Date & Time
+              </h5>
 
               {/* Date Selection */}
               <div className="mb-4">
@@ -417,7 +435,7 @@ const Bookings = () => {
                   {days.map(d => (
                     <div
                       key={d.id}
-                      className={`text-center p-3 mx-1 rounded cursor-pointer ${state.day.id === d.id ? 'bg-primary text-white' : 'bg-light'
+                      className={`text-center p-2 mx-1 rounded cursor-pointer ${state.day.id === d.id ? 'bg-primary text-white' : 'bg-light'
                         } ${d.isToday ? 'border border-primary' : ''}`}
                       onClick={() => updateState({ day: d })}
                       style={{ minWidth: '90px', cursor: 'pointer' }}
@@ -425,7 +443,7 @@ const Bookings = () => {
                       <div className="fw-bold">{d.dayName}</div>
                       <div className="fs-4 fw-semibold">{d.dayNumber}</div>
                       <div>{d.month}</div>
-                      {d.isToday && <div className="small">Today</div>}
+                      {d.isToday && <div className="small"><BsClockHistory className="me-1" /> Today</div>}
                     </div>
                   ))}
                 </div>
@@ -433,10 +451,13 @@ const Bookings = () => {
 
               {/* Time Slot Selection */}
               <div className="mb-4">
-                <h5 className="mb-3">Select Time Slot (2 hours)</h5>
+                <h5 className="mb-3">
+                  <BsClock className="me-2 text-primary" /> Select Time Slot (2 hours)
+                </h5>
                 {state.day.isToday && (
-                  <div className="alert alert-info py-2 mb-3">
-                    <small>ℹ️ Past slots unavailable</small>
+                  <div className="alert alert-info py-2 mb-3 d-flex align-items-center">
+                    <BsInfoCircle className="me-2" />
+                    <small>Past slots unavailable</small>
                   </div>
                 )}
 
@@ -455,6 +476,7 @@ const Bookings = () => {
                 </select>
                 {state.slots.length > 0 && (
                   <small className="text-muted mt-2 d-block">
+                    <BsClockHistory className="me-1" />
                     Available slots: {state.slots.filter(s => !s.past).length}
                   </small>
                 )}
@@ -462,7 +484,9 @@ const Bookings = () => {
 
               {/* Guest Selection */}
               <div className="mb-4">
-                <h5 className="mb-3">Number of Guests</h5>
+                <h5 className="mb-3">
+                  <BsPeopleFill className="me-2 text-primary" /> Number of Guests
+                </h5>
                 <div className="row">
                   <div className="col-md-6">
                     <select
@@ -494,10 +518,12 @@ const Bookings = () => {
               {/* Table Selection */}
               {state.slot && (
                 <div className="mb-4">
-                  <h5 className="mb-3">Select a Table</h5>
+                  <h5 className="mb-3">
+                    <BsTable className="me-2 text-primary" /> Select a Table
+                  </h5>
                   {state.availableTables.length === 0 ? (
-                    <div className="alert alert-warning">
-                      <i className="bi bi-exclamation-triangle me-2"></i>
+                    <div className="alert alert-warning d-flex align-items-center">
+                      <BsExclamationTriangle className="me-2" />
                       No tables available for this time slot with {state.guestOption === "other" ? state.customGuests : state.guestOption} guest(s).
                     </div>
                   ) : (
@@ -510,9 +536,17 @@ const Bookings = () => {
                             style={{ cursor: 'pointer' }}
                             onClick={() => updateState({ selectedTable: table.id })}
                           >
-                            <div className="fw-bold">Table {table.table_number}</div>
-                            <div className="small">Capacity: {table.capacity}</div>
-                            <div className="small text-success">✓ Available</div>
+                            <div className="fw-bold">
+                              <BsClipboardData className="me-1" />
+                              Table {table.table_number}
+                            </div>
+                            <div className="small">
+                              <BsPeopleFill className="me-1" />
+                              Capacity: {table.capacity}
+                            </div>
+                            <div className="small text-success">
+                              <BsCheckCircle className="me-1" /> Available
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -525,15 +559,17 @@ const Bookings = () => {
               <form onSubmit={handleBooking}>
                 <button
                   type="submit"
-                  className="btn btn-primary w-100"
+                  className="btn btn-primary w-100 d-flex justify-content-center align-items-center"
                   disabled={!state.slot || !state.selectedTable}
                 >
+                  <BsBagCheck className="me-2" />
                   Book Table
                 </button>
               </form>
             </CardBody>
           </Card>
         </div>
+
       </div>
     </div>
   );
