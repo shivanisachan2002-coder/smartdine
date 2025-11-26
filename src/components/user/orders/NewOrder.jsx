@@ -124,7 +124,7 @@ const NewOrders = () => {
                     src={dish.image}
                     alt={dish.name}
                     className="img-fluid rounded-top w-100 border-bottom"
-                    style={{ maxHeight: "140px", objectFit: "cover" }}
+                    style={{ maxHeight: "160px", objectFit: "cover" }}
                   />
                   <div className="card-body d-flex flex-column flex-grow-1">
                     <h5 className="mb-1 fw-bold">
@@ -173,6 +173,7 @@ const NewOrders = () => {
               </div>
             ))
           )}
+          <div className="my-5"></div>
         </div>
 
         {/* Cart Bar */}

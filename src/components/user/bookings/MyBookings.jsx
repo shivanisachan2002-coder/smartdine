@@ -77,7 +77,7 @@ const MyBookings = () => {
   return (
     <div className="container my-5">
       <div className="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-        <h2>
+        <h2 className="fw-bold d-flex align-items-center">
           <i className="bi bi-journal-bookmark me-2"></i>
           My Bookings
         </h2>

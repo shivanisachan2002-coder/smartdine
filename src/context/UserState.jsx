@@ -275,7 +275,7 @@ const UserState = (props) => {
   }, [isLoggedIn, getLocation]);
 
   return (
-    <UserContext.Provider value={{ isLoggedIn, login, logout, userData, updateUserData, location, localRestaurantData, restaurantData, fetchRestaurantDetails, restaurantTables, fetchRestaurantTables, fetchBookingsForDateTime, createTableBooking, myBookings, fetchMyAllBookings, restaurantMenuItems, fetchRestaurantItems, placeNewOrder, addItemsToOrder, userAllOrders, fetchUserAllOrders}}>
+    <UserContext.Provider value={{ isLoggedIn, login, logout, getLocation, userData, updateUserData, location, localRestaurantData, restaurantData, fetchRestaurantDetails, restaurantTables, fetchRestaurantTables, fetchBookingsForDateTime, createTableBooking, myBookings, fetchMyAllBookings, restaurantMenuItems, fetchRestaurantItems, placeNewOrder, addItemsToOrder, userAllOrders, fetchUserAllOrders}}>
       {props.children}
     </UserContext.Provider>
   )

@@ -1,34 +1,31 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../../../context/Context";
 import { Link } from "react-router-dom";
+import { BsGeoAltFill, BsClock, BsStarFill, BsBookmarkStar } from "react-icons/bs";
 
 const UserDashboard = () => {
-  const { localRestaurantData } = useContext(UserContext);
+  const { localRestaurantData, getLocation } = useContext(UserContext);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("all");
 
-  // Filter restaurants
   const filteredRestaurants = localRestaurantData
     ? localRestaurantData.filter((restaurant) => {
-      const matchesSearch =
-        restaurant.res_name
-          ?.toLowerCase()
-          .includes(searchTerm.toLowerCase()) ||
-        restaurant.city?.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesFilter =
-        filter === "all" || restaurant.cuisine_type === filter;
-      return matchesSearch && matchesFilter;
-    })
+        const matchesSearch =
+          restaurant.res_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          restaurant.city?.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesFilter = filter === "all" || restaurant.cuisine_type === filter;
+        return matchesSearch && matchesFilter;
+      })
     : [];
 
   const cuisineTypes = localRestaurantData
-    ? [
-      ...new Set(
-        localRestaurantData.map((r) => r.cuisine_type).filter(Boolean)
-      ),
-    ]
+    ? [...new Set(localRestaurantData.map((r) => r.cuisine_type).filter(Boolean))]
     : [];
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(getLocation);
+  }, [getLocation]);
 
   return (
     <div className="container py-4">
@@ -43,7 +40,7 @@ const UserDashboard = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <button className="btn btn-danger">
+            <button className="btn btn-danger" type="button">
               <i className="bi bi-search"></i>
             </button>
           </div>
@@ -70,74 +67,99 @@ const UserDashboard = () => {
           <div className="row g-4">
             {filteredRestaurants.map((restaurant) => (
               <div key={restaurant.id} className="col-md-6 col-lg-4">
-                <div className="card h-100 shadow-sm hover-lift">
-                  <div className="position-relative">
+                <div className="card h-100 shadow-sm border-0 rounded-4 hover-lift">
+                  <div className="position-relative overflow-hidden rounded-top">
                     <img
                       src={restaurant.restaurant_image}
-                      className="card-img-top"
                       alt={restaurant.res_name}
-                      style={{ height: "180px", objectFit: "cover" }}
+                      className="card-img-top"
+                      style={{ height: "180px", objectFit: "cover", transition: "transform 0.3s ease" }}
                     />
-                    <span className="badge bg-white text-dark position-absolute top-0 end-0 m-2">
-                      <i className="fas fa-star text-warning me-1"></i>
+                    <span className="badge bg-warning text-dark position-absolute top-0 start-0 m-3 d-flex align-items-center gap-1 shadow-sm rounded-pill fs-6 fw-semibold">
+                      <BsStarFill />
                       {restaurant.rating || "4.5"}
                     </span>
                   </div>
-
-                  <div className="card-body d-flex flex-column f2">
-                    <span className="d-flex justify-content-between">
-                      <span className="card-title h4">
+                  <div className="card-body d-flex flex-column">
+                    <div className="d-flex justify-content-between align-items-start mb-2">
+                      <h5
+                        className="card-title fw-bold mb-0"
+                        title={restaurant.res_name}
+                        style={{
+                          flexGrow: 1,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
                         {restaurant.res_name}
-                      </span>
-                      <Link to={restaurant.google_location_url}>
-                        <i className="bi bi-geo-alt-fill cl1"></i>
+                      </h5>
+                      <Link
+                        to={restaurant.google_location_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="cl1 ms-2"
+                        title="View on Map"
+                      >
+                        <BsGeoAltFill size={20} />
                       </Link>
-                    </span>
-                    <p className="text-muted small mb-2">
-                      <i className="bi bi-geo-fill me-1 cl1"></i>
+                    </div>
+
+                    <p className="text-muted mb-1 d-flex align-items-center gap-1">
+                      <BsGeoAltFill className="cl1" />
                       {restaurant.city}
                     </p>
-                    <p className="badge bg-secondary mb-2 align-self-start">
-                      {restaurant.cuisine_type || "Various"}
-                    </p>
-                    {/* <p className="card-text flex-grow-1">
-                      {restaurant.description ||
-                        "Delicious food in a cozy atmosphere."}
-                    </p> */}
 
-                    <div className="mb-3 p-3 bg-light rounded">
-                      <h6 className="mb-1 fw-semibold">Opening Hours</h6>
-                      <div className="fw-semibold">
-                        {new Date(`1970-01-01T${restaurant.opening_time}`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} -
-                        {new Date(`1970-01-01T${restaurant.closing_time}`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    <span
+                      className="badge bg-secondary mb-3 align-self-start px-3 py-2 rounded-pill text-uppercase fw-semibold"
+                      title="Cuisine Type"
+                    >
+                      {restaurant.cuisine_type || "Various"}
+                    </span>
+
+                    <div className="bg-light p-3 rounded mb-3">
+                      <div className="d-flex align-items-center gap-2 text-secondary">
+                        <BsClock />
+                        <div className="fw-semibold">
+                          {new Date(`1970-01-01T${restaurant.opening_time}`).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                          {" - "}
+                          {new Date(`1970-01-01T${restaurant.closing_time}`).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </div>
                       </div>
                     </div>
 
-                    <div className="d-flex gap-2 mt-auto">
-                      <Link to={`bookings/${restaurant.id}`} className="btn btn-outline-primary btn-sm flex-fill">
-                        Book Table
-                      </Link>
-                    </div>
+                    <Link
+                      to={`bookings/${restaurant.id}`}
+                      className="btn btn-primary mt-auto d-flex align-items-center justify-content-center gap-2"
+                    >
+                      <BsBookmarkStar />
+                      Book Table
+                    </Link>
                   </div>
+                  <style jsx>{`
+                    .hover-lift:hover img {
+                      transform: scale(1.05);
+                    }
+                    .hover-lift:hover {
+                      box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.15);
+                    }
+                  `}</style>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <div class="alert alert-secondary" role="alert">
-            No Restaurant Available
+          <div className="alert alert-secondary" role="alert">
+            No Restaurants Available
           </div>
         )}
       </div>
-      <style jsx>{`
-        .hover-lift {
-          transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .hover-lift:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-        }
-      `}</style>
     </div>
   );
 };
