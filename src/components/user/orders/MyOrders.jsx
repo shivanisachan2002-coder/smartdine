@@ -156,6 +156,7 @@ const MyOrders = () => {
         ))}
       </div>
       {/* Orders Table */}
+      <hr />
       <div className="card border-0 shadow-sm">
         <div className="card-body">
           <ul className="nav nav-pills mb-3">
@@ -165,7 +166,7 @@ const MyOrders = () => {
             ].map(({ key, label, count, icon }) => (
               <li key={key} className="nav-item">
                 <button
-                  className={`nav-link rounded-pill px-4 fw-bold ${activeTab === key ? "active bg-primary text-white" : ""}`}
+                  className={`nav-link rounded-pill px-md-4 px-2 fw-bold ${activeTab === key ? "active bg-primary text-white" : ""}`}
                   onClick={() => setActiveTab(key)}
                   type="button"
                 >

@@ -6,12 +6,16 @@ import './sidebars.scss'
 
 const RestaurantLayout = () => {
   const { isLoggedIn, logout, restaurantData } = useContext(RestaurantContext);
-  // console.log(restaurantData);
-
 
   const navigate = useNavigate();
-  const location = useLocation();
-  const loc = window.location.pathname;
+  // const location = useLocation();
+  // const loc = window.location.pathname;
+  const location = window.location.href.split('/')[6]
+
+  const url = window.location.href;
+  const parts = url.split("/");
+  const afterThirdSlash = parts.slice(3).join("/");
+
   const image = "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_incoming&w=740&q=80"
 
   const items = [
@@ -70,7 +74,7 @@ const RestaurantLayout = () => {
               <ul className="nav nav-pills mb-auto">
                 {items.map((item) => (
                   <li className="nav-item" key={item.id}>
-                    <Link to={`${item.target}`} className={`nav-link ${loc === `/smartdine-/restaurant/${item.name}` ? 'active' : 'link-body-emphasis'}`} aria-current="page">
+                    <Link to={`${item.target}`} className={`nav-link ${afterThirdSlash === `smartdine-/#/restaurant/${item.name}` ? 'active' : 'link-body-emphasis'}`} aria-current="page">
                       <i className={`bi bi-${item.icon}`}></i>
                       <span className='text-capitalize'>{item.name}</span>
                     </Link>
@@ -94,7 +98,8 @@ const RestaurantLayout = () => {
                     <span className="navbar-toggler-icon"></span>
                   </button>
 
-                  <span className="h3 fw-semibold f1 text-capitalize ms-md-0 ms-5">{location.pathname.split('/')[3]}</span>
+                  {/* <span className="h3 fw-semibold f1 text-capitalize ms-md-0 ms-5">{location.pathname.split('/')[3]}</span> */}
+                  <span className="h3 fw-semibold f1 text-capitalize ms-md-0 ms-5">{location}</span>
                   <div>
 
                   </div>
@@ -139,7 +144,7 @@ const RestaurantLayout = () => {
                       <ul className="nav nav-pills mb-auto d-flex flex-column">
                         {items.map((item) => (
                           <li className="nav-item" data-bs-dismiss="offcanvas" key={item.id}>
-                            <Link to={item.target} className={`nav-link ${loc === `/smartdine-/restaurant/${item.name}` ? 'active' : 'link-body-emphasis'}`} aria-current="page">
+                            <Link to={item.target} className={`nav-link ${afterThirdSlash === `smartdine-/#/restaurant/${item.name}` ? 'active' : 'link-body-emphasis'}`} aria-current="page">
                               <i className={`bi bi-${item.icon}`}></i>
                               <span className='text-capitalize'>{item.name}</span>
                             </Link>

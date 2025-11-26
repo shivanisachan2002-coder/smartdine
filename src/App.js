@@ -3,7 +3,7 @@ import "./App.scss";
 import { useEffect, useContext } from "react";
 import { Toaster } from "react-hot-toast";
 import { MyStateContext } from "./context/Context";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 
 // All States 
 import RestaurantState from "./context/RestaurantState";
@@ -61,7 +61,7 @@ const App = () => {
   }, []);
 
   return (
-    <BrowserRouter basename="/smartdine-">
+    <HashRouter>
       <Top />
       <LoadingBar
         color="#E2293F"
@@ -158,7 +158,7 @@ const App = () => {
           </Route>
         </Routes>
       </AdminState> */}
-    </BrowserRouter>
+    </HashRouter>
   );
 };
 
