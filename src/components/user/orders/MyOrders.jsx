@@ -30,7 +30,7 @@ const MyOrders = () => {
       fetchUserAllOrders();
     }, 5000);
     return () => clearInterval(interval);
-  }, [fetchUserAllOrders]);
+  }, []);
 
   const today = new Date().setHours(0, 0, 0, 0);
 

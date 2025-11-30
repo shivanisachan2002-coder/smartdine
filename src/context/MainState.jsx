@@ -28,8 +28,18 @@ const MainState = (props) => {
     }
   }
 
+  const fetchTeamMembers = async () => {
+    try {
+      const response = await ApiService.get('team-members/')
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching team members:', error)
+      return []
+    }
+  }
+
   return (
-    <MainContext.Provider value={{ mainData, setMainData, locations, getLocations, contactData, fetchAllExistingContacts }}>
+    <MainContext.Provider value={{ mainData, setMainData, locations, getLocations, contactData, fetchAllExistingContacts, fetchTeamMembers }}>
       {props.children}
     </MainContext.Provider>
   )

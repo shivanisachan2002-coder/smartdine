@@ -4,8 +4,8 @@ import { UserContext } from "../../../context/Context";
 const CONFIG = {
   formFields: {
     name: { label: "Full Name", type: "text", required: true },
-    email: { label: "Email Address", type: "email", required: true },
-    mobile: { label: "Mobile Number", type: "tel", required: true, pattern: "[0-9]{10}" },
+    email: { label: "Email Address", type: "email", required: true, disabled: true },
+    mobile: { label: "Mobile Number", type: "tel", required: true, pattern: "[0-9]{10}", disabled: true },
     address: { label: "Address", type: "textarea", required: true },
     pincode: { label: "Pincode", type: "text", required: true, pattern: "[0-9]{6}" },
     city: { label: "City", type: "text", required: true }
@@ -58,15 +58,20 @@ const UserProfile = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    if (errors[name]) setErrors(prev => ({ ...prev, [name]: "" }));
+    // Prevent changes for disabled fields
+    if (CONFIG.formFields[name].disabled) return;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   // Validate Form Data
   const validateForm = () => {
     const newErrors = {};
-    Object.keys(CONFIG.formFields).forEach(field => {
-      if (!formData[field].trim())
+    Object.keys(CONFIG.formFields).forEach((field) => {
+      if (
+        CONFIG.formFields[field].required &&
+        (!formData[field] || !formData[field].trim())
+      )
         newErrors[field] = `${CONFIG.formFields[field].label} is required`;
     });
     if (formData.mobile && !/^[0-9]{10}$/.test(formData.mobile))
@@ -100,7 +105,10 @@ const UserProfile = () => {
             </div>
             <div className="card-body">
               {showSuccess && (
-                <div className="alert alert-success d-flex align-items-center" role="alert">
+                <div
+                  className="alert alert-success d-flex align-items-center"
+                  role="alert"
+                >
                   <i className="bi bi-check-circle-fill me-2"></i>
                   {CONFIG.messages.saveSuccess}
                 </div>
@@ -121,6 +129,7 @@ const UserProfile = () => {
                         value={formData[fieldKey]}
                         onChange={handleChange}
                         rows="3"
+                        disabled={fieldConfig.disabled || false}
                       />
                     ) : (
                       <input
@@ -131,6 +140,7 @@ const UserProfile = () => {
                         value={formData[fieldKey]}
                         onChange={handleChange}
                         pattern={fieldConfig.pattern}
+                        disabled={fieldConfig.disabled || false}
                       />
                     )}
                     {errors[fieldKey] && (
@@ -142,14 +152,14 @@ const UserProfile = () => {
                   </div>
                 ))}
                 <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                    disabled={loading}
-                  >
+                  <button type="submit" className="btn btn-primary" disabled={loading}>
                     {loading ? (
                       <>
-                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        <span
+                          className="spinner-border spinner-border-sm me-2"
+                          role="status"
+                          aria-hidden="true"
+                        ></span>
                         Saving...
                       </>
                     ) : (

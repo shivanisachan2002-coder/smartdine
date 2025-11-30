@@ -9,7 +9,7 @@ const Footer = () => {
   ];
 
   const footerTab2 = [
-    { "id": 1, "name": "What's New", "to": "/new-features" },
+    { "id": 1, "name": "Developers", "to": "/developer" },
     { "id": 2, "name": "Offers", "to": "/offers" },
     { "id": 3, "name": "Forget Password", "to": "/forget-password" },
     { "id": 4, "name": "Contact Us", "to": "/contact-us" },

@@ -86,6 +86,7 @@ const UserState = (props) => {
     const user_id = localStorage.getItem('user_id');
     try {
       await UserApi.patch(`user/details/${user_id}/`, updatedData);
+      fetchUserDetails();
       return true;
     } catch (error) {
       console.log("Error response:", error.response?.data);
