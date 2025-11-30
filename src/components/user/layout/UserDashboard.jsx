@@ -70,7 +70,7 @@ const UserDashboard = () => {
         {filteredRestaurants.length > 0 ? (
           <div className="row g-4">
             {filteredRestaurants.map((restaurant) => (
-              <div key={restaurant.id} className="col-md-6 col-lg-4">
+              <div key={restaurant.id} className="col-md-6 col-lg-4" data-aos="fade-up" data-aos-duration="1000">
                 <div className="card h-100 shadow-sm border rounded-4 hover-lift">
                   <div className="position-relative overflow-hidden rounded-top">
                     <img

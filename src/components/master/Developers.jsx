@@ -7,30 +7,17 @@ import { MainContext } from "../../context/Context";
 const roleBadgeColor = (role) => {
   if (role.toLowerCase().includes("leader")) return "danger";
   if (role.toLowerCase().includes("frontend")) return "success";
-  if (role.toLowerCase().includes("testing") || role.toLowerCase().includes("integration")) return "info";
+  if (role.toLowerCase().includes("testing") || role.toLowerCase().includes("integration")) return "warning";
   return "secondary";
 };
 
 const Developers = () => {
-  const { fetchTeamMembers } = useContext(MainContext);
-  const [teamMembers, setTeamMembers] = useState([]);
-
-  useEffect(() => {
-    async function loadTeam() {
-      try {
-        const data = await fetchTeamMembers();
-        setTeamMembers(data);
-      } catch (error) {
-        console.error("Error fetching team members:", error);
-      }
-    }
-    loadTeam();
-  }, [fetchTeamMembers]);
+  const { teamMembers } = useContext(MainContext);
 
   return (
     <>
       {/* Header */}
-      <div className="container-fluid bg-light border-bottom">
+      <div className="container-fluid bg-light border-bottom sticky-top">
         <header className="container d-flex justify-content-between align-items-center px-md-0">
           <div className="d-flex align-items-center">
             <img src={logo} alt="Logo" height="60" className="me-2" />
@@ -46,13 +33,13 @@ const Developers = () => {
       {/* Main Content */}
       <section className="container py-5">
         <h2 className="mb-4 d-flex justify-content-center align-items-center gap-2 f6 fw-semibold">
-          <BsPeopleFill className="text-primary" />
+          <BsPeopleFill />
           Our Team
         </h2>
         <hr />
         <div className="row justify-content-center mt-md-5">
           {teamMembers.map((member) => (
-            <div key={member.id} className="col-md-3 mb-4">
+            <div key={member.id} className="col-md-3 mb-4" data-aos="flip-left" data-aos-duration="1000">
               <div className={`card shadow-sm h-100`}>
 
                 {/* Image with fixed aspect ratio + zoom hover */}
@@ -72,30 +59,30 @@ const Developers = () => {
                 </div>
 
                 <div className="card-body d-flex flex-column">
-                  <h5 className="card-title d-flex align-items-center">
+                  <h5 className="card-title d-flex align-items-center f2 fw-semibold">
                     {member.name}
                     {member.is_leader && <span className="badge bg-primary ms-2">Leader</span>}
                   </h5>
                   <span
-                    className={`badge bg-${roleBadgeColor(member.role)} mb-2`}
-                    style={{ fontSize: "0.85rem" }}
+                    className={`badge bg-${roleBadgeColor(member.role)} f6 mb-2`}
+                    style={{ fontSize: "0.95rem" }}
                     title={member.role}
                   >
                     <BsPersonBadge className="me-1" />
                     {member.role}
                   </span>
-                  <p className="card-text mb-1">
+                  <p className="card-text mb-1 f2">
                     <strong>Email:</strong>{" "}
                     <a href={`mailto:${member.email}`}>{member.email}</a>
                   </p>
-                  <p className="card-text">
+                  <p className="card-text f2">
                     <strong>Mobile:</strong>
                     <a href={`tel:${member.mobile}`} className="ms-2 text-decoration-none cl4">{member.mobile}</a>
                   </p>
 
                   <div className="mt-auto mb-3 d-flex flex-wrap gap-2 bg-light p-3 rounded rounded-2">
                     {member.skills.map((skill, index) => (
-                      <span key={index} className="badge bg-secondary">
+                      <span key={index} className="badge bg-secondary f3">
                         <BsCodeSquare className="me-1" />
                         {skill}
                       </span>

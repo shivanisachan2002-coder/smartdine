@@ -1,4 +1,4 @@
-import  { useState } from 'react'
+import  { useEffect, useState } from 'react'
 import { MainContext } from './Context';
 import ApiService from '../apiservice/ApiService';
 
@@ -28,18 +28,23 @@ const MainState = (props) => {
     }
   }
 
+  const [teamMembers, setTeamMembers] = useState([]);
   const fetchTeamMembers = async () => {
     try {
       const response = await ApiService.get('team-members/')
-      return response.data;
+      setTeamMembers(response.data);
     } catch (error) {
       console.error('Error fetching team members:', error)
       return []
     }
   }
 
+  useEffect(() => {
+    fetchTeamMembers();
+  }, []);
+
   return (
-    <MainContext.Provider value={{ mainData, setMainData, locations, getLocations, contactData, fetchAllExistingContacts, fetchTeamMembers }}>
+    <MainContext.Provider value={{ mainData, setMainData, locations, getLocations, contactData, fetchAllExistingContacts, teamMembers, fetchTeamMembers }}>
       {props.children}
     </MainContext.Provider>
   )
