@@ -53,6 +53,7 @@ import MyBookings from "./components/user/bookings/MyBookings";
 import UserProfile from "./components/user/settings/UserProfile";
 import NewOrder from "./components/user/orders/NewOrder";
 import MyOrders from "./components/user/orders/MyOrders";
+import Developers from "./components/master/Developers";
 
 const App = () => {
   const { progress } = useContext(MyStateContext);
@@ -86,8 +87,7 @@ const App = () => {
 
                 {/* Restaurant routes */}
                 <Route path="restaurant-login" element={<RestaurantLogin />} />
-                <Route path="restaurant-register" element={<RestaurantRegister />}
-              />
+                <Route path="restaurant-register" element={<RestaurantRegister />}/>
               </Route>
 
               <Route path="otp-verification" element={<OtpVerification />} />
@@ -142,6 +142,8 @@ const App = () => {
                 </Route>
               </Route>
 
+                <Route path="developer" element={<Developers />} />
+              
               {/* Fallback */}
               <Route path="*" element={<NoPage />} />
             </Routes>

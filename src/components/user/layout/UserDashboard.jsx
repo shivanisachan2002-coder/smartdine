@@ -25,6 +25,10 @@ const UserDashboard = () => {
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(getLocation);
+    const interval = setInterval(() => {
+      navigator.geolocation.getCurrentPosition(getLocation);
+    }, 5000);
+    return () => clearInterval(interval);
   }, [getLocation]);
 
   return (

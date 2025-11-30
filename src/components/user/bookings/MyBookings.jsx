@@ -93,7 +93,7 @@ const MyBookings = () => {
             </p>
             <button
               className="btn btn-primary"
-              onClick={() => window.location.href = "/restaurants"}>
+              onClick={() => window.location.href = "/smartdine-/#/restaurants"}>
               <i className="bi bi-plus-circle me-2"></i>
               Make a Booking
             </button>
