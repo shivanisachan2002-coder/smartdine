@@ -28,6 +28,11 @@ const UserState = (props) => {
     return token && !isTokenExpired(token);
   });
 
+  // const [isLoggedIn, setIsLoggedIn] = useState(() => {
+  //   return !!localStorage.getItem('user_access_token');
+  // });
+
+
   // Login handler: save tokens and set login state
   const login = ({ accessToken, refreshToken, user_id }) => {
     localStorage.setItem('user_access_token', accessToken);
@@ -261,10 +266,21 @@ const UserState = (props) => {
     }
   };
 
+  const checkTokens = () => {
+    const access = localStorage.getItem("user_access_token");
+    const refresh = localStorage.getItem("user_refresh_token");
+
+    if (!access || !refresh) {
+      setIsLoggedIn(false);
+    }
+  };
   useEffect(() => {
     if (isLoggedIn) {
       navigator.geolocation.getCurrentPosition(getLocation);
       fetchUserDetails();
+      checkTokens();
+      const interval = setInterval(checkTokens, 500); // check every 0.5 sec
+      return () => clearInterval(interval);
     }
 
     if (!isLoggedIn) {
@@ -273,10 +289,11 @@ const UserState = (props) => {
       setLocalRestaurantData([]);
     }
 
+
   }, [isLoggedIn, getLocation]);
 
   return (
-    <UserContext.Provider value={{ isLoggedIn, login, logout, getLocation, userData, updateUserData, location, localRestaurantData, restaurantData, fetchRestaurantDetails, restaurantTables, fetchRestaurantTables, fetchBookingsForDateTime, createTableBooking, myBookings, fetchMyAllBookings, restaurantMenuItems, fetchRestaurantItems, placeNewOrder, addItemsToOrder, userAllOrders, fetchUserAllOrders}}>
+    <UserContext.Provider value={{ isLoggedIn, login, logout, getLocation, userData, updateUserData, location, localRestaurantData, restaurantData, fetchRestaurantDetails, restaurantTables, fetchRestaurantTables, fetchBookingsForDateTime, createTableBooking, myBookings, fetchMyAllBookings, restaurantMenuItems, fetchRestaurantItems, placeNewOrder, addItemsToOrder, userAllOrders, fetchUserAllOrders }}>
       {props.children}
     </UserContext.Provider>
   )

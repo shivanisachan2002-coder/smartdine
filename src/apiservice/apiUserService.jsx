@@ -15,7 +15,7 @@ const removeUserTokens = () => {
 
 // Axios instance for refresh token calls without interceptors to avoid recursion
 const refreshInstance = axios.create({
-  baseURL: process.env.REACT_APP_BASE_API,
+  baseURL: process.env.REACT_APP_REFRESH_TOKEN_URL,
   timeout: 5000,
 });
 
@@ -39,41 +39,38 @@ apiUserService.interceptors.request.use(
 
 // Handle 401 errors by refreshing token and retrying original request
 apiUserService.interceptors.response.use(
-  (response) => response,
-  async (error) => {
+  response => response,
+  async error => {
     const originalRequest = error.config;
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      const refreshToken = getUserRefreshToken();
 
+      const refreshToken = getUserRefreshToken();
       if (!refreshToken) {
-        removeUserTokens();
-        window.location.href = '/user-login'; // redirect user to login (adjust path)
+        logout();
         return Promise.reject(error);
       }
 
       try {
-        // Use the exact refresh token endpoint full URL or from env
-         const refreshResponse = await refreshInstance.post('token/refresh/', {
+        const refreshResponse = await refreshInstance.post("refresh/", {
           refresh: refreshToken,
         });
 
-        const { access } = refreshResponse.data;
-        setUserToken(access);
+        const newAccessToken = refreshResponse.data.access;
+        setUserToken(newAccessToken);
 
-        // Retry original request with new token
-        originalRequest.headers['Authorization'] = `Bearer ${access}`;
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return apiUserService(originalRequest);
-      } catch (refreshError) {
-        removeUserTokens();
-        window.location.href = '/user-login'; // redirect user on failure
-        return Promise.reject(refreshError);
+      } catch (e) {
+        logout();
+        return Promise.reject(e);
       }
     }
 
     return Promise.reject(error);
   }
 );
+
 
 export default apiUserService;

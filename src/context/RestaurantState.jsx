@@ -41,6 +41,9 @@ const RestaurantState = (props) => {
     localStorage.removeItem('restaurant_refresh_token');
     localStorage.removeItem("restaurant_reg_id");
     setIsLoggedIn(false);
+    // setTimeout(() => {
+    // navigate('/smartdine-/#/restaurant-login', { replace: true });
+    // }, 0);
     navigate('/restaurant-login');
   }, [navigate]);
 
@@ -387,14 +390,28 @@ const RestaurantState = (props) => {
   };
 
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      fetchRestaurantDetails();
+  const checkTokens = () => {
+  const access = localStorage.getItem("restaurant_access_token");
+  const refresh = localStorage.getItem("restaurant_refresh_token");
+
+    if (!access || !refresh) {
+      setIsLoggedIn(false);
     }
+  };
+  
+  useEffect(() => {
     if (!isLoggedIn) {
       setRestaurantData([]);
+      return; // stop here
     }
-  }, [isLoggedIn]);
+    fetchRestaurantDetails();
+    
+    checkTokens();
+  const interval = setInterval(checkTokens, 500); // check every 0.5 sec
+  return () => clearInterval(interval);
+
+}, [isLoggedIn]);
+
 
   return (
     <RestaurantContext.Provider value={{ isLoggedIn, login, logout, restaurantData, updateRestaurantData, staffData, fetchStaffData, addStaff, updateStaff, deleteStaff, categories, fetchCategories, addCategory, deleteCategory, items, fetchItems, addItem, updateItem, deleteItem, sendWelcomeEmail, tablesData, fetchTablesData, addTable, updateTable, deleteTable, activeOrders, fetchTodayActiveOrders, updateItemStatus, updateOrderStatus , checkedInUser, fetchCheckedInBookings, searchCustomerBooking, checkInOut}}>

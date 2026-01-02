@@ -1,7 +1,7 @@
 import { BsLinkedin, BsGithub, BsPersonBadge, BsCodeSquare, BsPeopleFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import logo from "../../assets/image/general/logo.png";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { MainContext } from "../../context/Context";
 
 const roleBadgeColor = (role) => {
@@ -43,7 +43,7 @@ const Developers = () => {
               <div className={`card shadow-sm h-100`}>
 
                 {/* Image with fixed aspect ratio + zoom hover */}
-                <div className="overflow-hidden" style={{ width: "100%", aspectRatio: "4 / 3" }}>
+                <div className="overflow-hidden" style={{ width: "100%", aspectRatio: "4 / 3.5" }}>
                   <img
                     src={member.image_url}
                     alt={member.name}

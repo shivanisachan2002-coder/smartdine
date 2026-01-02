@@ -4,6 +4,7 @@ import { useContext } from 'react';
 import { UserContext } from '../../context/Context';
 
 const UserProtected = () => {
+  
   const { isLoggedIn } = useContext(UserContext);
 
   if (!isLoggedIn) {
