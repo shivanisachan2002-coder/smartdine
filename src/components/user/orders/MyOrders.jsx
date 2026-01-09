@@ -164,7 +164,7 @@ const MyOrders = () => {
               { key: "current", label: "Current Orders", count: currentOrders.length, icon: <BsTable className="me-1" /> },
               { key: "past", label: "Past Orders", count: pastOrders.length, icon: <BsClockHistory className="me-1" /> }
             ].map(({ key, label, count, icon }) => (
-              <li key={key} className="nav-item">
+              <li key={key} className="nav-item" >
                 <button
                   className={`nav-link rounded-pill px-md-4 px-2 fw-bold ${activeTab === key ? "active bg-primary text-white" : ""}`}
                   onClick={() => setActiveTab(key)}
